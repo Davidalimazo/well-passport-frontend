@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { IconBaseProps, IconType } from "react-icons/lib";
+import { IconType } from "react-icons/lib";
 import Select from "react-select";
 
 interface CustomSelectProps {
@@ -17,7 +17,7 @@ const CustomSelect: FC<CustomSelectProps> = ({
   placeholder,
   PlaceholderIcon,
 }) => {
-  const [error, setError] = useState(false);
+  const [_, setError] = useState(false);
   return (
     <div className="z-50">
       <Select

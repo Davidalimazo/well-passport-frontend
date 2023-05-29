@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import userImg from "../assets/images/user.png";
 import { PasswordInput } from "@mantine/core";
 import Button from "../components/buttons/Button";
@@ -10,7 +9,7 @@ import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import { apiRoutes } from "../utils/constants/api";
 import jwtDecode from "jwt-decode";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ErrorModal from "../components/modals/ErrorModal";
 import { useDisclosure } from "@mantine/hooks";
 import useAuth from "../utils/auth";
@@ -24,14 +23,14 @@ interface loginProps {}
 
 const Login = ({}: loginProps) => {
   const navigate = useNavigate();
-  const auth = useAuth((state) => state.setUser);
+  const { setUser } = useAuth((state) => state);
 
   const { register, handleSubmit, formState, setError, clearErrors } =
     useForm<FieldsValues>();
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
   const [opened, { open, close }] = useDisclosure(false);
-  const [errotText, setErrorText] = useState("");
+  const [errorText, setErrorText] = useState("");
 
   const onSubmit = async (data: FieldsValues) => {
     let { email, password } = data;
@@ -43,8 +42,9 @@ const Login = ({}: loginProps) => {
 
     if (req.data.access_token) {
       let user = await jwtDecode(req.data.access_token);
+
       //@ts-ignore
-      auth(user);
+      setUser(user, req.data.access_token);
       navigate("/home");
     } else {
       setErrorText(req.data.response);
@@ -156,7 +156,7 @@ const Login = ({}: loginProps) => {
           close={close}
           open={open}
           opened={opened}
-          text={errotText}
+          text={errorText}
         />
       </div>
     </>

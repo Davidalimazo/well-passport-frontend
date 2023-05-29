@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
+import { create } from "zustand";
+
+const store = JSON.parse(window.localStorage.getItem("client") || "{}");
 
 interface Props {
   clientId: string | undefined;
@@ -9,10 +11,14 @@ interface Props {
 }
 
 const useSetField = create<Props>((set) => ({
-  clientId: undefined,
-  clientName: undefined,
+  clientId: store.clientId,
+  clientName: store.clientName,
   setField: async (id: string | undefined, name: string | undefined) => {
     set((state) => ({ ...state, clientId: id, clientName: name }));
+    window.localStorage.setItem(
+      "client",
+      JSON.stringify({ clientId: id, clientName: name })
+    );
   },
 }));
 

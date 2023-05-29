@@ -1,17 +1,19 @@
-import { FC } from 'react';
-import { Modal, Avatar, Input } from '@mantine/core';
-import Button from '../buttons/Button';
-import { GiField, GiHobbitDwelling } from 'react-icons/gi';
-import { FaCloudUploadAlt, FaUser } from 'react-icons/fa';
-import { IoCall } from 'react-icons/io5';
-import { TbWorldLongitude } from 'react-icons/tb';
-import { AiTwotoneMail } from 'react-icons/ai';
-import { FieldDataProp } from '@/pages/field';
-import { Field } from '@prisma/client';
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import router from 'next/router';
+import { FC } from "react";
+import { Modal, Avatar, Input } from "@mantine/core";
+import Button from "../buttons/Button";
+import { GiField, GiHobbitDwelling } from "react-icons/gi";
+import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { TbWorldLongitude } from "react-icons/tb";
+import { AiTwotoneMail } from "react-icons/ai";
+import { FieldDataProp } from "../../pages/Fields";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { clientRoutes, fieldRoutes } from "../../utils/constants/api";
+import useAuth from "../../utils/auth";
+import { MdEmail } from "react-icons/md";
 
 interface ViewModalProps {
   open: () => void;
@@ -23,97 +25,102 @@ interface ViewModalProps {
 }
 
 interface FieldsValues {
-  numberOfWells: number;
   name: string;
+  numberOfWells: number;
+  image?: string;
   longitude: number;
   latitude: number;
   clientId: string;
   superintendent: {
     name: string;
-    mobileNo: string;
     email: string;
+    mobileNo: string;
   };
 }
 
 const AddFieldModal: FC<ViewModalProps> = ({
-  open,
   opened,
   close,
   title,
   isEdit,
   clientData,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    formState,
-    setError,
-    clearErrors,
-    getValues,
-    reset,
-  } = useForm<FieldsValues>({
-    defaultValues: {
-      name: isEdit ? clientData?.name : '',
-      numberOfWells: isEdit ? clientData?.numberOfWells : 0,
-      longitude: isEdit ? clientData?.longitude : 0,
-      latitude: isEdit ? clientData?.latitude : 0,
-      clientId: isEdit ? clientData?.clientId : '',
-      superintendent: {
-        email: isEdit ? clientData?.superintendent.email : '',
-        mobileNo: isEdit ? clientData?.superintendent.mobileNo : '',
-        name: isEdit ? clientData?.superintendent.name : '',
+  const { register, handleSubmit, formState, setError, clearErrors, reset } =
+    useForm<FieldsValues>({
+      defaultValues: {
+        name: isEdit ? clientData?.name : "",
+        numberOfWells: isEdit ? clientData?.numberOfWells : 0,
+        longitude: isEdit ? clientData?.longitude : 0,
+        latitude: isEdit ? clientData?.latitude : 0,
+        superintendent: {
+          email: isEdit ? clientData?.superintendent.email : "",
+          mobileNo: isEdit ? clientData?.superintendent.mobileNo : "",
+          name: isEdit ? clientData?.superintendent.name : "",
+        },
       },
-    },
-  });
-
+    });
+  const navigate = useNavigate();
   const { errors, isDirty, isValid, isSubmitting } = formState;
+  const { token } = useAuth((state) => state);
 
   const onSubmit = async (data: FieldsValues) => {
-    let {
-      name,
-      numberOfWells,
-      latitude,
-      longitude,
-      clientId,
-      superintendent,
-    } = data;
-
     try {
       if (isEdit) {
-        const post = await axios.put('http://localhost:3000/api/updatefield', {
-          data,
-          id: clientData?.id,
-        });
-        const res = await post.data;
-        if (res.data.status === 200) {
-          toast.success('field updated successfully');
-          reset();
-          router.reload();
-        } else {
-          toast.error('failed to update field');
-        }
+        await axios
+          .patch(
+            fieldRoutes + `/${clientData?._id}`,
+            {
+              ...data,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((_) => {
+            toast.success("Client update successfully");
+            reset();
+            navigate(0);
+          })
+          .catch((err) => console.log(err.message));
       } else {
-        const post = await axios.post(
-          'http://localhost:3000/api/addField',
-          data
-        );
-        const res = await post.data;
-        if (res.data.status === 200) {
-          toast.success('Field created successfully');
-          reset();
-          router.reload();
-        } else {
-          toast.error('failed to create field');
-        }
+        await axios
+          .post(
+            fieldRoutes,
+            {
+              ...data,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((_) => {
+            toast.success("Account created successfully");
+            reset();
+            navigate(0);
+          });
       }
     } catch (error) {
-      toast.error('An error occurred, please try again');
+      toast.error("An error occurred, please try again");
     }
   };
 
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal
+        radius={"md"}
+        size="lg"
+        opened={opened}
+        onClose={() => {
+          close();
+          navigate(0);
+        }}
+      >
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}
@@ -121,6 +128,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           <form
             className="pt-8 px-2 sm:px-6 md:px-6 lg:px-6"
             onSubmit={handleSubmit(onSubmit)}
+            autoComplete="off"
           >
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
@@ -133,11 +141,11 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? clientData?.name : ''}
-                      {...register('name', {
+                      defaultValue={isEdit ? clientData?.name : ""}
+                      {...register("name", {
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -160,13 +168,14 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={
-                        isEdit ? String(clientData?.numberOfWells) : '0'
+                      defaultValue={
+                        isEdit ? String(clientData?.numberOfWells) : "0"
                       }
-                      {...register('numberOfWells', {
+                      {...register("numberOfWells", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -192,11 +201,14 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? String(clientData?.longitude) : '0'}
-                      {...register('longitude', {
+                      defaultValue={
+                        isEdit ? String(clientData?.longitude) : "0"
+                      }
+                      {...register("longitude", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -217,11 +229,12 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? String(clientData?.latitude) : '0'}
-                      {...register('latitude', {
+                      defaultValue={isEdit ? String(clientData?.latitude) : "0"}
+                      {...register("latitude", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -250,13 +263,13 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={
-                        isEdit ? clientData?.superintendent.name : ''
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.name : ""
                       }
-                      {...register('superintendent.name', {
+                      {...register("superintendent.name", {
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -280,13 +293,13 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={
-                        isEdit ? clientData?.superintendent.mobileNo : ''
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.mobileNo : ""
                       }
-                      {...register('superintendent.mobileNo', {
+                      {...register("superintendent.mobileNo", {
                         required: {
                           value: isEdit ? false : true,
-                          message: 'name is required',
+                          message: "name is required",
                         },
                       })}
                       error={
@@ -298,13 +311,13 @@ const AddFieldModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="mb-4 flex-col sm:flex-row md:flex-row lg:flex-row">
+            <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <AiTwotoneMail className="text-gray-500" />
+                  <MdEmail className="text-gray-500" />
                   <span className="text-gray-400">Email</span>
                 </div>
-                <div className="text-lg font-lekton sm:pl-8 md:pl-8 lg:pl-8 w-full">
+                <div className="text-lg font-lekton sm:pl-8 md:pl-8 lg:pl-8 w-full font-bold">
                   <Input.Wrapper
                     id="superintendent.email"
                     error={errors.superintendent?.email?.message}
@@ -312,10 +325,10 @@ const AddFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={
-                        isEdit ? clientData?.superintendent.email : ''
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.email : ""
                       }
-                      {...register('superintendent.email', {
+                      {...register("superintendent.email", {
                         onBlur: (e) => {
                           if (
                             !e.target.value ||
@@ -324,26 +337,54 @@ const AddFieldModal: FC<ViewModalProps> = ({
                             )
                           ) {
                             !isEdit &&
-                              setError('superintendent.email', {
-                                type: 'pattern',
-                                message: 'invalid email format',
+                              setError("superintendent.email", {
+                                type: "pattern",
+                                message: "invalid email format",
                               });
                           } else {
-                            clearErrors('superintendent.email');
+                            clearErrors("superintendent.email");
                           }
                         },
                         required: {
                           value: isEdit ? false : true,
-                          message: 'email is required',
+                          message: "email is required",
                         },
                         pattern: {
-                          value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                          message: 'please enter a valid email',
+                          value:
+                            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                          message: "please enter a valid email",
                         },
                       })}
                       error={
                         errors.superintendent?.email?.message &&
-                        errors.superintendent.email.message.length > 0
+                        errors.superintendent?.email.message.length > 0
+                      }
+                    />
+                  </Input.Wrapper>
+                </div>
+              </div>
+
+              <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
+                <div className="flex flex-row items-center gap-3">
+                  <FaUser className="text-gray-500" />
+                  <span className="text-gray-400">Client Id</span>
+                </div>
+                <div className="text-lg font-lekton font-bold">
+                  <Input.Wrapper id="clientId" error={errors.clientId?.message}>
+                    <Input
+                      radius="lg"
+                      size="md"
+                      defaultValue={isEdit ? clientData?.clientId : ""}
+                      {...register("clientId", {
+                        disabled: isEdit ? true : false,
+                        required: {
+                          value: isEdit ? false : true,
+                          message: "ownerId is required",
+                        },
+                      })}
+                      error={
+                        errors.clientId?.message &&
+                        errors.clientId?.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -368,7 +409,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
                 className="font-lekton"
                 type="submit"
                 variant={
-                  !isDirty || !isValid || isSubmitting ? 'pressed' : 'default'
+                  !isDirty || !isValid || isSubmitting ? "pressed" : "default"
                 }
                 disabled={!isDirty || !isValid || isSubmitting}
               />

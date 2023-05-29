@@ -11,28 +11,28 @@ export const AdminMenu = [
     icon: <IoMdSettings />,
     text: "Settings",
     color: "",
-    link: "/settings",
+    link: "/home/settings",
   },
   {
     id: 1,
     icon: <FaUser />,
     text: "Create Account",
     color: "",
-    link: "/register",
+    link: "/home/register",
   },
   {
     id: 2,
     icon: <MdRecycling />,
     text: "Recycle Bin",
     color: "",
-    link: "/recycle",
+    link: "/home/recycle",
   },
   {
     id: 3,
     icon: <AiOutlineLogin />,
     text: "Log Out",
     color: "#D72617",
-    link: "/logout",
+    link: "/login",
   },
 ];
 export const authMenu = [
@@ -41,13 +41,13 @@ export const authMenu = [
     icon: <IoMdSettings />,
     text: "Settings",
     color: "",
-    link: "/settings",
+    link: "/home/settings",
   },
   {
     id: 1,
     icon: <AiOutlineLogin />,
     text: "Log Out",
     color: "#D72617",
-    link: "/logout",
+    link: "/login",
   },
 ];

@@ -1,30 +1,39 @@
 import { FC } from "react";
-import { Modal } from "@mantine/core";
+import { Modal, Avatar } from "@mantine/core";
 import Button from "../buttons/Button";
+import { BsFillBuildingsFill } from "react-icons/bs";
+import { FaUser } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
 import cautionImg from "../../assets/images/caution.png";
+import successImg from "../../assets/images/success.png";
+import { useNavigate } from "react-router-dom";
 
 interface ViewModalProps {
   open: () => void;
   close: () => void;
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
   opened: boolean;
   text: string;
-  id: string;
 }
 
-const DeleteModal: FC<ViewModalProps> = ({
+const RegisterModal: FC<ViewModalProps> = ({
+  open,
   opened,
   close,
   text,
   onDelete,
-  id,
 }) => {
+  const navigate = useNavigate();
+
+  const refreshPage = () => {
+    navigate(0);
+  };
   return (
     <>
       <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6 pb-6">
           <div className="flex flex-row items-center justify-center">
-            <img src={cautionImg} alt="caution image" />
+            <img src={successImg} alt="caution image" />
           </div>
           <div className="text-center text-[18px] font-lekton font-semibold mb-12">
             {text}
@@ -35,13 +44,16 @@ const DeleteModal: FC<ViewModalProps> = ({
               children="Cancel"
               variant="filled"
               className="w-[150px]"
-              onClick={close}
+              onClick={() => {
+                close();
+                navigate("/home");
+              }}
             />
             <Button
               children={`Proceed`}
               variant="outline_red"
               className="w-[150px] text-red-500"
-              onClick={() => onDelete(id)}
+              onClick={() => refreshPage()}
             />
           </div>
         </div>
@@ -50,4 +62,4 @@ const DeleteModal: FC<ViewModalProps> = ({
   );
 };
 
-export default DeleteModal;
+export default RegisterModal;

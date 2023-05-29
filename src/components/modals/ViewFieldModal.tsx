@@ -1,16 +1,16 @@
-import { FC } from 'react';
-import { Modal, Avatar } from '@mantine/core';
-import Button from '../buttons/Button';
-import { FaUser } from 'react-icons/fa';
-import { IoCall } from 'react-icons/io5';
-import Image from 'next/image';
-import router from 'next/router';
-import { FieldDataProp } from '@/pages/field';
-import { TbWorldLongitude } from 'react-icons/tb';
-import { AiTwotoneMail } from 'react-icons/ai';
-import { MdDateRange } from 'react-icons/md';
-import { GiField, GiHobbitDwelling } from 'react-icons/gi';
-import useSetWells from '@/hooks/useSetWells';
+import { FC } from "react";
+import { Modal, Avatar } from "@mantine/core";
+import Button from "../buttons/Button";
+import { FaUser } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { FieldDataProp } from "../../pages/Fields";
+import { TbWorldLongitude } from "react-icons/tb";
+import { AiTwotoneMail } from "react-icons/ai";
+import { MdDateRange } from "react-icons/md";
+import { GiField, GiHobbitDwelling } from "react-icons/gi";
+import useSetWells from "../../hooks/useSetWells";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 interface ViewModalProps {
   open: () => void;
@@ -28,20 +28,26 @@ const ViewFieldModal: FC<ViewModalProps> = ({
   clientData,
 }) => {
   const setFieldFun = useSetWells();
+  const navigate = useNavigate();
   const setFielD = (field: string | undefined) => {
     setFieldFun.setField(field);
-    router.push('/wells');
+    navigate("/wells");
   };
+
+  const formattedDate = clientData?.createdAt
+    ? format(new Date(clientData?.createdAt as string), "dd-MM-yyyy")
+    : "";
+
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}
           </div>
           <div className="flex flex-row items-center justify-center pb-8">
             {clientData?.image ? (
-              <Image
+              <img
                 alt={clientData.name}
                 src={clientData.image}
                 height={99}
@@ -155,7 +161,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Created Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.createdDate}
+                  {formattedDate}
                 </div>
               </div>
             </div>

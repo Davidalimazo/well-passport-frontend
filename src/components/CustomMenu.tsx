@@ -1,6 +1,7 @@
 import { Menu } from "@mantine/core";
 import { FC } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../utils/auth";
 
 interface CustomMenuProps {
   button: React.ReactNode;
@@ -9,6 +10,7 @@ interface CustomMenuProps {
 
 const CustomMenu: FC<CustomMenuProps> = ({ button, options }) => {
   const navigate = useNavigate();
+  const logOut = useAuth((state) => state.logOut);
   return (
     <>
       <Menu shadow="md" width={200}>
@@ -16,17 +18,18 @@ const CustomMenu: FC<CustomMenuProps> = ({ button, options }) => {
 
         <Menu.Dropdown>
           {options &&
-            options.map(({ icon, id, text, color, link }, i) => (
+            options.map(({ icon, id, text, color, link }) => (
               <Menu.Item
                 icon={icon}
                 key={id}
                 color={color ? `red` : "gray"}
                 onClick={() => {
                   if (text === "Log Out") {
+                    logOut();
                     navigate(link);
                   }
                   if (text === "Create Account") {
-                    navigate(link);
+                    navigate(link, { replace: true });
                   }
                   if (text === "Recycle Bin") {
                     navigate(link);

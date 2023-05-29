@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Example items, to simulate fetching from another resources.
 
@@ -6,19 +6,12 @@ interface Props {
   itemsPerPage: number;
   items: Array<any>;
 }
-interface PaginateProps {
-  pageIndex?: number;
-  pageCount?: number;
-  selected: number;
-}
 
 function PaginatedItems({ itemsPerPage, items }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerpage = itemsPerPage;
 
   const lastIndex = currentPage * recordsPerpage;
-  const firstIndex = lastIndex - recordsPerpage;
-  const records = items.slice(firstIndex, lastIndex);
   const totalPage = Math.ceil(items.length / recordsPerpage);
   //@ts-ignore
   const numbers = [...Array(totalPage + 1).keys()].slice(1);
@@ -28,11 +21,7 @@ function PaginatedItems({ itemsPerPage, items }: Props) {
       setCurrentPage(currentPage + 1);
     }
   };
-  const handlePrev = () => {
-    if (currentPage !== firstIndex) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+
 
   useEffect(() => {}, []);
 

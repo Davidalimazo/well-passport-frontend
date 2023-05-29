@@ -1,19 +1,19 @@
 import { FC } from "react";
-import { Modal, Input } from "@mantine/core";
+import { Modal, Avatar, Input } from "@mantine/core";
 import Button from "../buttons/Button";
-import { BsFillBuildingsFill } from "react-icons/bs";
+import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { TbWorldLongitude } from "react-icons/tb";
-import { ImLocation } from "react-icons/im";
-import { ClientDataProp } from "../../pages/Client";
+import { AiTwotoneMail } from "react-icons/ai";
+import { FieldDataProp } from "../../pages/Fields";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { clientRoutes } from "../../utils/constants/api";
+import { clientRoutes, fieldRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
+import { MdEmail } from "react-icons/md";
 
 interface ViewModalProps {
   open: () => void;
@@ -21,20 +21,24 @@ interface ViewModalProps {
   opened: boolean;
   title?: string;
   isEdit?: boolean;
-  clientData?: ClientDataProp | null;
+  clientData?: FieldDataProp | null;
 }
 
 interface FieldsValues {
   name: string;
-  contactPerson: string;
-  mobile: string;
-  website: string;
-  address: string;
-  email: string;
-  ownerId: string;
+  numberOfWells: number;
+  image?: string;
+  longitude: number;
+  latitude: number;
+  clientId: string;
+  superintendent: {
+    name: string;
+    email: string;
+    mobileNo: string;
+  };
 }
 
-const AddClientModal: FC<ViewModalProps> = ({
+const AddClientFieldModal: FC<ViewModalProps> = ({
   opened,
   close,
   title,
@@ -44,41 +48,28 @@ const AddClientModal: FC<ViewModalProps> = ({
   const { register, handleSubmit, formState, setError, clearErrors, reset } =
     useForm<FieldsValues>({
       defaultValues: {
-        address: clientData?.address,
-        contactPerson: clientData?.contactPerson,
-        email: clientData?.email,
-        mobile: clientData?.mobile,
-        name: clientData?.name,
-        website: clientData?.website,
+        name: isEdit ? clientData?.name : "",
+        numberOfWells: isEdit ? clientData?.numberOfWells : 0,
+        longitude: isEdit ? clientData?.longitude : 0,
+        latitude: isEdit ? clientData?.latitude : 0,
+        clientId: clientData?.clientId,
+        superintendent: {
+          email: isEdit ? clientData?.superintendent.email : "",
+          mobileNo: isEdit ? clientData?.superintendent.mobileNo : "",
+          name: isEdit ? clientData?.superintendent.name : "",
+        },
       },
     });
+  const navigate = useNavigate();
+  const { errors, isDirty, isValid, isSubmitting } = formState;
   const { token } = useAuth((state) => state);
 
-  const { errors, isDirty, isValid, isSubmitting } = formState;
-  const navigate = useNavigate();
   const onSubmit = async (data: FieldsValues) => {
     try {
       if (isEdit) {
-        const post = await axios.patch(
-          clientRoutes + `/${clientData?._id}`,
-          {
-            ...data,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        toast.success("Client update successfully");
-        reset();
-        navigate(0);
-      } else {
-        const post = await axios
-          .post(
-            clientRoutes,
+        await axios
+          .patch(
+            fieldRoutes + `/${clientData?._id}`,
             {
               ...data,
             },
@@ -95,6 +86,25 @@ const AddClientModal: FC<ViewModalProps> = ({
             navigate(0);
           })
           .catch((err) => console.log(err.message));
+      } else {
+        await axios
+          .post(
+            fieldRoutes,
+            {
+              ...data,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((_) => {
+            toast.success("Account created successfully");
+            reset();
+            navigate(0);
+          });
       }
     } catch (error) {
       toast.error("An error occurred, please try again");
@@ -124,8 +134,8 @@ const AddClientModal: FC<ViewModalProps> = ({
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <BsFillBuildingsFill className="text-gray-500" />
-                  <span className="text-gray-400">Client Name</span>
+                  <GiField className="text-gray-500" />
+                  <span className="text-gray-400">Field Name</span>
                 </div>
                 <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
                   <Input.Wrapper id="name" error={errors.name?.message}>
@@ -147,28 +157,31 @@ const AddClientModal: FC<ViewModalProps> = ({
                 </div>
               </div>
               <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
-                <div className="flex flex-row items-center gap-3 w-full">
-                  <FaUser className="text-gray-500" />
-                  <span className="text-gray-400">Contact Person</span>
+                <div className="flex flex-row items-center gap-3">
+                  <GiHobbitDwelling className="text-gray-500" />
+                  <span className="text-gray-400">Number of wells</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper
-                    id="contactPerson"
-                    error={errors.contactPerson?.message}
+                    id="numberOfWells"
+                    error={errors.numberOfWells?.message}
                   >
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.contactPerson : ""}
-                      {...register("contactPerson", {
+                      defaultValue={
+                        isEdit ? String(clientData?.numberOfWells) : "0"
+                      }
+                      {...register("numberOfWells", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: "contact person name is required",
+                          message: "name is required",
                         },
                       })}
                       error={
-                        errors.contactPerson?.message &&
-                        errors.contactPerson.message.length > 0
+                        errors.numberOfWells?.message &&
+                        errors.numberOfWells.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -178,24 +191,30 @@ const AddClientModal: FC<ViewModalProps> = ({
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
-                  <span className="text-gray-400">Mobile Number</span>
+                  <TbWorldLongitude className="text-gray-500" />
+                  <span className="text-gray-400">Longitude</span>
                 </div>
                 <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
-                  <Input.Wrapper id="mobile" error={errors.mobile?.message}>
+                  <Input.Wrapper
+                    id="longitude"
+                    error={errors.longitude?.message}
+                  >
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.mobile : ""}
-                      {...register("mobile", {
+                      defaultValue={
+                        isEdit ? String(clientData?.longitude) : "0"
+                      }
+                      {...register("longitude", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: "mobile is required",
+                          message: "name is required",
                         },
                       })}
                       error={
-                        errors.mobile?.message &&
-                        errors.mobile.message.length > 0
+                        errors.longitude?.message &&
+                        errors.longitude.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -204,23 +223,89 @@ const AddClientModal: FC<ViewModalProps> = ({
               <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
                 <div className="flex flex-row items-center gap-3">
                   <TbWorldLongitude className="text-gray-500" />
-                  <span className="text-gray-400">Website</span>
+                  <span className="text-gray-400">Latitude</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="website" error={errors.website?.message}>
+                  <Input.Wrapper id="latitude" error={errors.latitude?.message}>
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.website : ""}
-                      {...register("website", {
+                      defaultValue={isEdit ? String(clientData?.latitude) : "0"}
+                      {...register("latitude", {
+                        valueAsNumber: true,
                         required: {
                           value: isEdit ? false : true,
-                          message: "website is required",
+                          message: "name is required",
                         },
                       })}
                       error={
-                        errors.website?.message &&
-                        errors.website.message.length > 0
+                        errors.latitude?.message &&
+                        errors.latitude.message.length > 0
+                      }
+                    />
+                  </Input.Wrapper>
+                </div>
+              </div>
+            </div>
+            <div className="my-4 text-gray-400 gap-2 flex flex-row">
+              <FaUser /> <span>Superintendent</span>
+            </div>
+            <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
+              <div className="space-y-4">
+                <div className="flex flex-row items-center gap-3">
+                  <FaUser className="text-gray-500" />
+                  <span className="text-gray-400">Name</span>
+                </div>
+                <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
+                  <Input.Wrapper
+                    id="superintendent.name"
+                    error={errors.superintendent?.name?.message}
+                  >
+                    <Input
+                      radius="lg"
+                      size="md"
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.name : ""
+                      }
+                      {...register("superintendent.name", {
+                        required: {
+                          value: isEdit ? false : true,
+                          message: "name is required",
+                        },
+                      })}
+                      error={
+                        errors.superintendent?.name?.message &&
+                        errors.superintendent.name.message.length > 0
+                      }
+                    />
+                  </Input.Wrapper>
+                </div>
+              </div>
+              <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
+                <div className="flex flex-row items-center gap-3">
+                  <IoCall className="text-gray-500" />
+                  <span className="text-gray-400">Mobile Number</span>
+                </div>
+                <div className="text-lg font-lekton font-bold underline">
+                  <Input.Wrapper
+                    id="superintendent.mobileNo"
+                    error={errors.superintendent?.mobileNo?.message}
+                  >
+                    <Input
+                      radius="lg"
+                      size="md"
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.mobileNo : ""
+                      }
+                      {...register("superintendent.mobileNo", {
+                        required: {
+                          value: isEdit ? false : true,
+                          message: "name is required",
+                        },
+                      })}
+                      error={
+                        errors.superintendent?.mobileNo?.message &&
+                        errors.superintendent.mobileNo.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -234,12 +319,17 @@ const AddClientModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Email</span>
                 </div>
                 <div className="text-lg font-lekton sm:pl-8 md:pl-8 lg:pl-8 w-full font-bold">
-                  <Input.Wrapper id="email" error={errors.email?.message}>
+                  <Input.Wrapper
+                    id="superintendent.email"
+                    error={errors.superintendent?.email?.message}
+                  >
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.address : ""}
-                      {...register("email", {
+                      defaultValue={
+                        isEdit ? clientData?.superintendent.email : ""
+                      }
+                      {...register("superintendent.email", {
                         onBlur: (e) => {
                           if (
                             !e.target.value ||
@@ -248,12 +338,12 @@ const AddClientModal: FC<ViewModalProps> = ({
                             )
                           ) {
                             !isEdit &&
-                              setError("email", {
+                              setError("superintendent.email", {
                                 type: "pattern",
                                 message: "invalid email format",
                               });
                           } else {
-                            clearErrors("email");
+                            clearErrors("superintendent.email");
                           }
                         },
                         required: {
@@ -267,7 +357,8 @@ const AddClientModal: FC<ViewModalProps> = ({
                         },
                       })}
                       error={
-                        errors.email?.message && errors.email.message.length > 0
+                        errors.superintendent?.email?.message &&
+                        errors.superintendent?.email.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -277,15 +368,15 @@ const AddClientModal: FC<ViewModalProps> = ({
               <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
                 <div className="flex flex-row items-center gap-3">
                   <FaUser className="text-gray-500" />
-                  <span className="text-gray-400">Client Reprentative Id</span>
+                  <span className="text-gray-400">Client Id</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="ownerId" error={errors.ownerId?.message}>
+                  <Input.Wrapper id="clientId" error={errors.clientId?.message}>
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.ownerId : ""}
-                      {...register("ownerId", {
+                      defaultValue={clientData?.clientId}
+                      {...register("clientId", {
                         disabled: isEdit ? true : false,
                         required: {
                           value: isEdit ? false : true,
@@ -293,36 +384,8 @@ const AddClientModal: FC<ViewModalProps> = ({
                         },
                       })}
                       error={
-                        errors.ownerId?.message &&
-                        errors.ownerId.message.length > 0
-                      }
-                    />
-                  </Input.Wrapper>
-                </div>
-              </div>
-            </div>
-            <div className="mb-4"></div>
-            <div className="mb-4">
-              <div className="space-y-4">
-                <div className="flex flex-row items-center gap-3">
-                  <ImLocation className="text-gray-500" />
-                  <span className="text-gray-400">Address</span>
-                </div>
-                <div className="text-lg font-lekton sm:pl-8 md:pl-8 lg:pl-8 w-full">
-                  <Input.Wrapper id="address" error={errors.address?.message}>
-                    <Input
-                      radius="lg"
-                      size="xl"
-                      defaultValue={isEdit ? clientData?.address : ""}
-                      {...register("address", {
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "address is required",
-                        },
-                      })}
-                      error={
-                        errors.address?.message &&
-                        errors.address.message.length > 0
+                        errors.clientId?.message &&
+                        errors.clientId?.message.length > 0
                       }
                     />
                   </Input.Wrapper>
@@ -335,9 +398,9 @@ const AddClientModal: FC<ViewModalProps> = ({
                   <div className="flex flex-row items-center justify-center">
                     <FaCloudUploadAlt className="" size={30} />
                   </div>
-                  <div className="">Click here to upload logo</div>
+                  <div className="">Click here to upload field image</div>
                   <div className="">OR</div>
-                  <div className="">Drag Logo Here</div>
+                  <div className="">Drag Image Here</div>
                 </div>
               </div>
             </div>
@@ -359,4 +422,4 @@ const AddClientModal: FC<ViewModalProps> = ({
   );
 };
 
-export default AddClientModal;
+export default AddClientFieldModal;

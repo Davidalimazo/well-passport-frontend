@@ -1,9 +1,6 @@
-'use client';
-
-import { Select, Input } from '@mantine/core';
-import { FC } from 'react';
-import { IconType } from 'react-icons';
-import { createStyles, getStylesRef, rem } from '@mantine/core';
+import { Select, Input } from "@mantine/core";
+import { FC } from "react";
+import { IconType } from "react-icons";
 
 interface PlainSelectProps {
   id: string;
@@ -19,12 +16,6 @@ interface PlainSelectProps {
   className?: string;
 }
 
-const useStyles = createStyles((theme) => ({
-  itemsWrapper: {
-    background: '#06C149',
-  },
-}));
-
 const PlainSelect: FC<PlainSelectProps> = ({
   data,
   value,
@@ -38,7 +29,6 @@ const PlainSelect: FC<PlainSelectProps> = ({
   Icon,
   ...rest
 }) => {
-  const { classes } = useStyles();
   return (
     <Input.Wrapper id={id} error={errorMessage}>
       <Select

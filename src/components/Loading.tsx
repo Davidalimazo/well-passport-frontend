@@ -1,13 +1,10 @@
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 import logoImg from "../assets/images/favicon-plain.png";
 import loadingImg from "../assets/images/loading.png";
 import Spinner from "../utils/spinner/Spinner";
-import useAuth from "../utils/auth";
-import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 export default function SplashScreen() {
-  const auth = useAuth((state) => state.user);
 
   useEffect(() => {
     const loader = async () => {

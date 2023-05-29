@@ -1,4 +1,3 @@
-import { useLocalStorage } from "@mantine/hooks";
 import { create } from "zustand";
 
 export interface IUser {
@@ -12,28 +11,41 @@ export interface IUser {
   role: string;
   updatedAt: string;
   userId: string;
+  exp: number;
   _id: string;
 }
 
 interface Props {
   user: IUser | null;
-  setUser: (user: IUser | null) => void;
+  token: string | undefined;
+  setUser: (user: IUser | null, token: string | undefined) => void;
   logOut: () => void;
+  checkExpiredToken: () => void;
 }
 
-const localStorage: IUser = JSON.parse(
-  window.localStorage.getItem("user") || "{}"
-);
+const localStorage = JSON.parse(window.localStorage.getItem("user") || "{}");
 
-const useAuth = create<Props>((set) => ({
-  user: localStorage,
-  setUser: async (prop: IUser | null) => {
-    set({ user: prop });
-    window.localStorage.setItem("user", JSON.stringify(prop));
+//var currentTime = new Date().getTime();
+
+const useAuth = create<Props>((set, get) => ({
+  user: localStorage.user,
+  token: localStorage.token,
+  setUser: async (user: IUser | null, token: string | undefined) => {
+    set((state) => ({ ...state, user, token }));
+    window.localStorage.setItem("user", JSON.stringify({ user, token }));
   },
   logOut: () => {
-    set({ user: null });
+    set({ user: null, token: undefined });
     window.localStorage.removeItem("user");
+  },
+  checkExpiredToken: () => {
+    if (get().user?.exp) {
+      //@ts-ignore
+      if (Date.now() - get().user?.exp > 0) {
+        set({ user: null, token: undefined });
+        window.localStorage.removeItem("user");
+      }
+    }
   },
 }));
 

@@ -2,7 +2,6 @@ import { cn } from "../../utils/classnames";
 import { cva, VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { ButtonHTMLAttributes, FC } from "react";
-import { IconType } from "react-icons";
 
 const buttonVariants = cva("active:bg-[#D72617]", {
   variants: {
@@ -10,7 +9,7 @@ const buttonVariants = cva("active:bg-[#D72617]", {
       default: "bg-[#D72617]",
       filled: "bg-black text-white ring-2 ring-black",
       outline_black: "bg-white text-black ring-2 ring-black",
-      outline_red: "bg-white text-[#D72617] ring-2 ring-[#D72617]",
+      outline_red: "text-red-500 ring-2 ring-[#D72617]",
       pressed: "bg-[#C8CCC8]",
       outline: "bg-white border border-green-400 text-green-400",
     },

@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 import logoImg from "../assets/images/favicon-plain.png";
 import loadingImg from "../assets/images/loading.png";
 import Spinner from "../utils/spinner/Spinner";

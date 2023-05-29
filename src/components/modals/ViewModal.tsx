@@ -1,14 +1,13 @@
-import { FC } from 'react';
-import { Modal, Avatar } from '@mantine/core';
-import Button from '../buttons/Button';
-import { BsFillBuildingsFill } from 'react-icons/bs';
-import { FaUser } from 'react-icons/fa';
-import { IoCall } from 'react-icons/io5';
-import { ClientDataProp } from '@/pages/client';
-import Image, { StaticImageData } from 'next/image';
-import useSetField from '@/hooks/useSetField';
-import router from 'next/router';
-import { format } from 'date-fns';
+import { FC } from "react";
+import { Modal, Avatar } from "@mantine/core";
+import Button from "../buttons/Button";
+import { BsFillBuildingsFill } from "react-icons/bs";
+import { FaUser } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { ClientDataProp } from "../../pages/Client";
+import { format } from "date-fns";
+import useSetField from "../../hooks/useSetField";
+import { useNavigate } from "react-router-dom";
 
 interface ViewModalProps {
   open: () => void;
@@ -19,34 +18,34 @@ interface ViewModalProps {
 }
 
 const ViewModal: FC<ViewModalProps> = ({
-  open,
   opened,
   close,
   title,
   clientData,
 }) => {
   const setFieldFun = useSetField();
+  const navigate = useNavigate();
   const setFielD = (
     clientId: string | undefined,
     clientName: string | undefined
   ) => {
     setFieldFun.setField(clientId, clientName);
-    router.push('/field');
+    navigate("/home/client/field");
   };
 
-  const formattedDate = clientData?.createdDate
-    ? format(new Date(clientData?.createdDate as string), 'dd-MM-yyyy')
-    : '';
+  const formattedDate = clientData?.createdAt
+    ? format(new Date(clientData?.createdAt as string), "dd-MM-yyyy")
+    : "";
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}
           </div>
-          <div className="flex flex-row items-center justify-center pb-8">
+          <div className="flex flex-row items-center justify-center pb-4">
             {clientData?.image ? (
-              <Image
+              <img
                 alt={clientData.name}
                 src={clientData.image}
                 height={99}
@@ -64,6 +63,10 @@ const ViewModal: FC<ViewModalProps> = ({
               </Avatar>
             )}
           </div>
+          <div className="my-4 flex items-center gap-2 text-center justify-center flex-wrap">
+            <span className="text-sm">Client Rep Id:</span>
+            <span className="font-semibold text-md">{clientData?.ownerId}</span>
+          </div>
           <div className="flex flex-row gap-6 items-center justify-center">
             <Button
               children="Close"
@@ -73,7 +76,7 @@ const ViewModal: FC<ViewModalProps> = ({
             />
             <Button
               onClick={() => {
-                setFielD(clientData?.id, clientData?.name);
+                setFielD(clientData?._id, clientData?.name);
                 close();
               }}
               children="Fields"
