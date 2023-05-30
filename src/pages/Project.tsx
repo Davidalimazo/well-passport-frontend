@@ -13,45 +13,44 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
-import {  fieldRoutes } from "../utils/constants/api";
-import ViewFieldModal from "../components/modals/ViewFieldModal";
-import AddClientFieldModal from "../components/modals/AddClientFieldModal";
+import { apiRoutes, projectRoutes } from "../utils/constants/api";
 import { BsArrowRight } from "react-icons/bs";
-import useSetClient from "../hooks/useSetClient";
+import ViewProjectModal from "../components/modals/ViewProjectModal";
+import AddProjectModal from "../components/modals/AddProjectModal";
 
-export interface FieldDataProp {
-  _id: string;
-  fieldId: string;
+export interface ProjectDataProp {
+  wellId: string;
   adminId: string;
+  fieldId: string;
   clientId: string;
   name: string;
-  numberOfWells: number;
   image: string;
-  longitude: number;
-  latitude: number;
-  superintendent: {
-    name: string;
-    email: string;
-    mobileNo: string;
-  };
+  status: string;
+  startDate: string;
+  endDate: string;
+  _id: string;
   createdAt: string;
   updatedAt: string;
+  projectId: string;
+  description: string;
+  rig: string;
 }
-
 //@ts-ignore
 
-const ClientFieldList = () => {
+const WellProjectList = () => {
   const [index, setIndex] = useState(0);
   const [fieldId, setFieldId] = useState("");
   const { token, user } = useAuth((state) => state);
-  const { clientId, clientName } = useSetClient((state) => state);
+  const yu = JSON.parse(window.localStorage.getItem("well") || "{}");
 
-  const [cachedData, setCachedDta] = useState<Array<FieldDataProp> | null>([]);
+  const [cachedData, setCachedDta] = useState<Array<ProjectDataProp> | null>(
+    []
+  );
 
   useEffect(() => {
     const getData = async () => {
       await axios
-        .get(fieldRoutes + `/client/${clientId}`, {
+        .get(apiRoutes.getWellProjects + `${yu.wellId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -64,13 +63,13 @@ const ClientFieldList = () => {
   }, []);
   const navigate = useNavigate();
 
-  const [currData, setCurrData] = useState<FieldDataProp | null>(null);
+  const [currData, setCurrData] = useState<ProjectDataProp | null>(null);
 
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleDelete = async (id: string) => {
     await axios
-      .delete(fieldRoutes + `/${id}`, {
+      .delete(projectRoutes + `/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -99,7 +98,7 @@ const ClientFieldList = () => {
   return (
     <>
       <Helmet>
-        <title key="pagetitle">Zamam Well Passport | Fields</title>
+        <title key="pagetitle">Zamam Well Passport | Wells</title>
         <meta
           name="description"
           content="Zamam Well Passport application"
@@ -115,7 +114,15 @@ const ClientFieldList = () => {
               <BsArrowRight />
             </div>
             <div className="flex flex-row items-center gap-1">
-              <Link to="#">Field</Link>
+              <Link to="/home/client/field">Field</Link>
+              <BsArrowRight />
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              <Link to="/home/client/well">Well</Link>
+              <BsArrowRight />
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              <Link to="#">Project</Link>
             </div>
           </div>
         </div>
@@ -132,15 +139,16 @@ const ClientFieldList = () => {
             }
           />
         </div>
+
         <div className="flex flex-row items-center justify-between px-6 pb-2">
           <div className="text-[15px] sm:text-[20px] tracking-wide font-bold font-lekton">
-            {clientName?.toUpperCase()} FIELD LIST
+            {yu.wellName?.toUpperCase()} | PROJECT LIST
           </div>
           {user?.role === "ADMIN" ? (
             <div className="text-center flex flex-row items-center">
               <Button
-                children="ADD NEW FIELD"
-                className="h-[28px] text-sm lg:text-md w-3/3"
+                children="ADD NEW PROJECT"
+                className="text-[13px] sm:text-lg h-[28px] w-3/3"
                 onClick={openAddModal}
                 icon={
                   <>
@@ -154,19 +162,7 @@ const ClientFieldList = () => {
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
           {cachedData &&
             cachedData.map(
-              (
-                {
-                  _id: id,
-                  name,
-                  numberOfWells,
-                  image,
-                  longitude,
-                  latitude,
-                  createdAt,
-                  ...rest
-                },
-                i
-              ) => (
+              ({ _id: id, name, status, image, rig, ...rest }, i) => (
                 <div
                   className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
                     i === index
@@ -179,11 +175,9 @@ const ClientFieldList = () => {
                     setCurrData({
                       _id: id,
                       name,
-                      numberOfWells,
-                      longitude,
-                      latitude,
+                      status,
                       image,
-                      createdAt,
+                      rig,
                       ...rest,
                     });
                   }}
@@ -200,18 +194,13 @@ const ClientFieldList = () => {
                     </div>
                     <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
                       <div className="">
-                        <span className="text-grey-200">Field Name: </span>
+                        <span className="text-grey-200">Project Name: </span>
                         <span className="font-bold">{name}</span>
                       </div>
+
                       <div className="">
-                        <span className="text-grey-200">Wells: </span>
-                        <span className="font-semibold">{numberOfWells}</span>
-                      </div>
-                      <div className="">
-                        <span className="text-grey-200">Superintendent: </span>
-                        <span className="font-bold underline">
-                          {rest.superintendent.name}
-                        </span>
+                        <span className="text-grey-200">Rig: : </span>
+                        <span className="font-semibold">{rig}</span>
                       </div>
                     </div>
                   </div>
@@ -245,25 +234,25 @@ const ClientFieldList = () => {
           </div>
         </div>
       </div>
-      <ViewFieldModal
+      <ViewProjectModal
         open={open}
         opened={opened}
         close={close}
-        title="FIELD INFORMATION"
+        title="PROJECT INFORMATION"
         clientData={currData}
       />
-      <AddClientFieldModal
+      <AddProjectModal
         open={openAddModal}
         opened={openedAddModal}
         close={onClose}
-        title="ADD NEW FIELD"
+        title="ADD PROJECT FIELD"
         clientData={currData}
       />
-      <AddClientFieldModal
+      <AddProjectModal
         open={openEditModal}
         opened={openedEditModal}
         close={onCloseEdit}
-        title="EDIT CLIENT INFORMATION"
+        title="EDIT PROJECT INFORMATION"
         clientData={currData}
         isEdit
       />
@@ -271,7 +260,7 @@ const ClientFieldList = () => {
         open={openDeleteModal}
         opened={openedDeleteModal}
         close={onCloseDelete}
-        text="Are you sure you want to delete this client"
+        text="Are you sure you want to delete this project"
         id={fieldId}
         onDelete={() => handleDelete(fieldId)}
       />
@@ -279,4 +268,4 @@ const ClientFieldList = () => {
   );
 };
 
-export default ClientFieldList;
+export default WellProjectList;

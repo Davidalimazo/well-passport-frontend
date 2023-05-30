@@ -5,17 +5,15 @@ import { MdDeleteForever } from "react-icons/md";
 import { useEffect, useState } from "react";
 import placeholderImg from "../assets/images/placeholderImg.png";
 import { useDisclosure } from "@mantine/hooks";
-import ViewModal from "../components/modals/ViewModal";
+
 import Button from "../components/buttons/Button";
-import AddClientModal from "../components/modals/AddClientModal";
 import DeleteModal from "../components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
-import { Link } from "react-router-dom";
-import { clientRoutes, fieldRoutes } from "../utils/constants/api";
+import { fieldRoutes } from "../utils/constants/api";
 import ViewFieldModal from "../components/modals/ViewFieldModal";
 import AddFieldModal from "../components/modals/AddFieldModal";
 

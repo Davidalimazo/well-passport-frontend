@@ -10,6 +10,8 @@ import ClientListUi from "../../pages/Client";
 import FieldListUI from "../../pages/Fields";
 import ClientOutlet from "../../pages/ClientOutlet";
 import ClientFieldList from "../../pages/ClientField";
+import WellFieldList from "../../pages/Well";
+import WellProjectList from "../../pages/Project";
 
 const AppRoutes = () => {
   const { user } = useAuth((state) => state);
@@ -27,6 +29,8 @@ const AppRoutes = () => {
           <Route path="client" element={<ClientOutlet />}>
             <Route index element={<ClientListUi />} />
             <Route path="field" element={<ClientFieldList />} />
+            <Route path="well" element={<WellFieldList />} />
+            <Route path="project" element={<WellProjectList />} />
           </Route>
           <Route path="field" element={<FieldListUI />} />
         </Route>

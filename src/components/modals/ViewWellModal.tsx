@@ -1,20 +1,18 @@
-import { FC } from 'react';
-import { Modal, Avatar } from '@mantine/core';
-import Button from '../buttons/Button';
-import { FaUser } from 'react-icons/fa';
-import { IoCall } from 'react-icons/io5';
-import Image from 'next/image';
-import router from 'next/router';
-import { TbWorldLongitude } from 'react-icons/tb';
-import { MdDateRange } from 'react-icons/md';
-import { FcInspection } from 'react-icons/fc';
-import { CgSize } from 'react-icons/cg';
-import { GrStatusUnknown } from 'react-icons/gr';
-import { BiTestTube } from 'react-icons/bi';
-import { BsEvStationFill } from 'react-icons/bs';
-import { GiField, GiHobbitDwelling } from 'react-icons/gi';
-import { WellDataProp } from '@/pages/wells';
-import useSetProject from '@/hooks/useSetProject';
+import { FC } from "react";
+import { Modal, Avatar } from "@mantine/core";
+import Button from "../buttons/Button";
+import { TbWorldLongitude } from "react-icons/tb";
+import { MdDateRange } from "react-icons/md";
+import { FcInspection } from "react-icons/fc";
+import { CgSize } from "react-icons/cg";
+import { GrStatusUnknown } from "react-icons/gr";
+import { BiTestTube } from "react-icons/bi";
+import { BsEvStationFill } from "react-icons/bs";
+import { GiField, GiHobbitDwelling } from "react-icons/gi";
+import { WellDataProp } from "../../pages/Well";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import useSetWells from "../../hooks/useSetWells";
 
 interface ViewModalProps {
   open: () => void;
@@ -25,27 +23,35 @@ interface ViewModalProps {
 }
 
 const ViewWellModal: FC<ViewModalProps> = ({
-  open,
   opened,
   close,
   title,
   clientData,
 }) => {
-  const setFieldFun = useSetProject();
-  const setFielD = (field: string | undefined) => {
-    setFieldFun.setField(field);
-    router.push('/project');
+  const navigate = useNavigate();
+  const { setWell } = useSetWells((state) => state);
+  const setFielD = (
+    wellId: string | undefined,
+    wellName: string | undefined
+  ) => {
+    setWell(wellId, wellName);
+    navigate("/home/client/project");
   };
+
+  const formattedDate = clientData?.createdAt
+    ? format(new Date(clientData?.createdAt as string), "dd-MM-yyyy")
+    : "";
+
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}
           </div>
           <div className="flex flex-row items-center justify-center pb-8">
             {clientData?.image ? (
-              <Image
+              <img
                 alt={clientData.name}
                 src={clientData.image}
                 height={99}
@@ -65,16 +71,16 @@ const ViewWellModal: FC<ViewModalProps> = ({
           </div>
           <div className="flex flex-row gap-6 items-center justify-center">
             <Button
-              children="Projects"
+              children="Close"
               variant="filled"
               className="font-lekton h-[28px] w-[122px]"
-              onClick={() => setFielD(clientData?.name)}
+              onClick={close}
             />
             <Button
-              onClick={() => null}
-              children="Action"
+              children="Projects"
               variant="outline_black"
               className="text-black font-lekton h-[28px] w-[122px]"
+              onClick={() => setFielD(clientData?._id, clientData?.name)}
             />
           </div>
           <div className="pt-8 px-6">
@@ -145,7 +151,7 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Current Status</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.currentStatus}
+                  {clientData?.status}
                 </div>
               </div>
               <div className="space-y-4 w-2/5">
@@ -185,7 +191,12 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Spud Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.spudDate}
+                  {clientData?.spudDate
+                    ? format(
+                        new Date(clientData?.spudDate as string),
+                        "dd-MM-yyyy"
+                      )
+                    : ""}
                 </div>
               </div>
               <div className="space-y-4 w-2/5">
@@ -194,7 +205,13 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Initial Completion Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.initialCompletionDate}
+                  {clientData?.initialCompletionDate
+                    ? format(
+                        new Date(clientData?.initialCompletionDate as string),
+                        "dd-MM-yyyy"
+                      )
+                    : ""}
+                  {}
                 </div>
               </div>
             </div>
@@ -205,7 +222,12 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">First Production Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.firstProductionDate}
+                  {clientData?.firstProductionDate
+                    ? format(
+                        new Date(clientData?.firstProductionDate as string),
+                        "dd-MM-yyyy"
+                      )
+                    : ""}
                 </div>
               </div>
               <div className="space-y-4 w-2/5">
@@ -214,7 +236,7 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Casing</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.casing}
+                  {clientData?.casting}
                 </div>
               </div>
             </div>
@@ -225,7 +247,7 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Created Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.createdDate}
+                  {formattedDate}
                 </div>
               </div>
             </div>

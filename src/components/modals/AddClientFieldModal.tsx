@@ -1,19 +1,19 @@
 import { FC } from "react";
-import { Modal, Avatar, Input } from "@mantine/core";
+import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { TbWorldLongitude } from "react-icons/tb";
-import { AiTwotoneMail } from "react-icons/ai";
-import { FieldDataProp } from "../../pages/Fields";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { clientRoutes, fieldRoutes } from "../../utils/constants/api";
+import { fieldRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
 import { MdEmail } from "react-icons/md";
+import { FieldDataProp } from "../../pages/Fields";
+import useSetClient from "../../hooks/useSetClient";
 
 interface ViewModalProps {
   open: () => void;
@@ -45,6 +45,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
   isEdit,
   clientData,
 }) => {
+  const { clientId } = useSetClient((state) => state);
   const { register, handleSubmit, formState, setError, clearErrors, reset } =
     useForm<FieldsValues>({
       defaultValues: {
@@ -52,7 +53,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
         numberOfWells: isEdit ? clientData?.numberOfWells : 0,
         longitude: isEdit ? clientData?.longitude : 0,
         latitude: isEdit ? clientData?.latitude : 0,
-        clientId: clientData?.clientId,
+        clientId: clientId,
         superintendent: {
           email: isEdit ? clientData?.superintendent.email : "",
           mobileNo: isEdit ? clientData?.superintendent.mobileNo : "",
@@ -71,7 +72,17 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
           .patch(
             fieldRoutes + `/${clientData?._id}`,
             {
-              ...data,
+              name: data.name,
+              numberOfWells: data.numberOfWells,
+              image: "",
+              longitude: data.longitude,
+              latitude: data.longitude,
+              clientId: clientId,
+              superintendent: {
+                name: data.superintendent.name,
+                email: data.superintendent.email,
+                mobileNo: data.superintendent.mobileNo,
+              },
             },
             {
               headers: {
@@ -87,11 +98,21 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
           })
           .catch((err) => console.log(err.message));
       } else {
+        console.log(clientId);
         await axios
           .post(
             fieldRoutes,
             {
-              ...data,
+              name: data.name,
+              numberOfWells: data.numberOfWells,
+              longitude: data.longitude,
+              latitude: data.longitude,
+              clientId: clientId,
+              superintendent: {
+                name: data.superintendent.name,
+                email: data.superintendent.email,
+                mobileNo: data.superintendent.mobileNo,
+              },
             },
             {
               headers: {
@@ -375,9 +396,9 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={clientData?.clientId}
+                      defaultValue={clientId}
                       {...register("clientId", {
-                        disabled: isEdit ? true : false,
+                        disabled: true,
                         required: {
                           value: isEdit ? false : true,
                           message: "ownerId is required",

@@ -1,11 +1,11 @@
-import { FC } from 'react';
-import { Modal, Input } from '@mantine/core';
-import Button from '../buttons/Button';
-import { ProjectDataProp } from '@/pages/project';
-import { HiDocumentText } from 'react-icons/hi';
-import { MdDateRange } from 'react-icons/md';
-import { GiField, GiHobbitDwelling } from 'react-icons/gi';
-import { GrStatusUnknown } from 'react-icons/gr';
+import { FC } from "react";
+import { Modal, Input } from "@mantine/core";
+import Button from "../buttons/Button";
+// import { ProjectDataProp } from '../../pages/Project';
+// import { HiDocumentText } from 'react-icons/hi';
+import { MdDateRange } from "react-icons/md";
+import { GiField, GiHobbitDwelling } from "react-icons/gi";
+import { GrStatusUnknown } from "react-icons/gr";
 
 interface ViewModalProps {
   open: () => void;
@@ -13,10 +13,10 @@ interface ViewModalProps {
   opened: boolean;
 }
 
-const GenerateReportModal: FC<ViewModalProps> = ({ open, opened, close }) => {
+const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             GENERATE REPORT

@@ -2,22 +2,22 @@
 
 import { create } from "zustand";
 
-const store = JSON.parse(window.localStorage.getItem("client") || "{}");
+const store = JSON.parse(window.localStorage.getItem("field") || "{}");
 
 interface Props {
-  clientId: string | undefined;
-  clientName: string | undefined;
-  setField: (id: string | undefined, name: string | undefined) => void;
+  fieldId: string | undefined;
+  fieldName: string | undefined;
+  setField: (id: string, name: string) => void;
 }
 
 const useSetField = create<Props>((set) => ({
-  clientId: store.clientId,
-  clientName: store.clientName,
+  fieldId: store.clientId,
+  fieldName: store.clientName,
   setField: async (id: string | undefined, name: string | undefined) => {
-    set((state) => ({ ...state, clientId: id, clientName: name }));
+    set((state) => ({ ...state, fieldId: id, fieldName: name }));
     window.localStorage.setItem(
-      "client",
-      JSON.stringify({ clientId: id, clientName: name })
+      "field",
+      JSON.stringify({ fieldId: id, fieldName: name })
     );
   },
 }));

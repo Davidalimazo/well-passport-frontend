@@ -50,6 +50,7 @@ const AddClientModal: FC<ViewModalProps> = ({
         mobile: clientData?.mobile,
         name: clientData?.name,
         website: clientData?.website,
+        ownerId: clientData?.ownerId,
       },
     });
   const { token } = useAuth((state) => state);
@@ -59,28 +60,53 @@ const AddClientModal: FC<ViewModalProps> = ({
   const onSubmit = async (data: FieldsValues) => {
     try {
       if (isEdit) {
-        const post = await axios.patch(
-          clientRoutes + `/${clientData?._id}`,
-          {
-            ...data,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        await axios
+          .patch(
+            clientRoutes + `/${clientData?._id}`,
+            {
+              name: data.name,
 
-        toast.success("Client update successfully");
-        reset();
-        navigate(0);
+              contactPerson: data.contactPerson,
+
+              mobile: data.mobile,
+
+              email: data.email,
+
+              address: data.address,
+
+              website: data.website,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((_) => {
+            toast.success("Client update successfully");
+            reset();
+            navigate(0);
+          })
+          .catch((err) => console.log(err.message));
       } else {
-        const post = await axios
+        await axios
           .post(
             clientRoutes,
             {
-              ...data,
+              name: data.name,
+
+              contactPerson: data.contactPerson,
+
+              mobile: data.mobile,
+
+              email: data.email,
+
+              address: data.address,
+
+              ownerId: data.ownerId,
+
+              website: data.website,
             },
             {
               headers: {

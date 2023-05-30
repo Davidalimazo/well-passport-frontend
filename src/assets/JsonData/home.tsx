@@ -12,7 +12,7 @@ export const homePageData = [
   },
   {
     id: 1,
-    title: "Clients",
+    title: "Client",
     img: building,
     link: "/home/client",
   },

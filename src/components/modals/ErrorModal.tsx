@@ -1,9 +1,5 @@
 import { FC } from "react";
 import { Modal } from "@mantine/core";
-import Button from "../buttons/Button";
-import { BsFillBuildingsFill } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
 import cautionImg from "../../assets/images/caution.png";
 
 interface ViewModalProps {
@@ -13,7 +9,7 @@ interface ViewModalProps {
   text: string;
 }
 
-const ErrorModal: FC<ViewModalProps> = ({ open, opened, close, text }) => {
+const ErrorModal: FC<ViewModalProps> = ({ opened, close, text }) => {
   return (
     <>
       <Modal radius={"md"} size="md" opened={opened} onClose={close}>

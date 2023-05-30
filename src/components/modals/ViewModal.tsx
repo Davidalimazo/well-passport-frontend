@@ -6,8 +6,8 @@ import { FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { ClientDataProp } from "../../pages/Client";
 import { format } from "date-fns";
-import useSetField from "../../hooks/useSetField";
 import { useNavigate } from "react-router-dom";
+import useSetClient from "../../hooks/useSetClient";
 
 interface ViewModalProps {
   open: () => void;
@@ -23,13 +23,13 @@ const ViewModal: FC<ViewModalProps> = ({
   title,
   clientData,
 }) => {
-  const setFieldFun = useSetField();
+  const { setClient } = useSetClient((state) => state);
   const navigate = useNavigate();
   const setFielD = (
     clientId: string | undefined,
     clientName: string | undefined
   ) => {
-    setFieldFun.setField(clientId, clientName);
+    setClient(clientId, clientName);
     navigate("/home/client/field");
   };
 

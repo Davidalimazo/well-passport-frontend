@@ -1,16 +1,22 @@
-'use client';
+import { create } from "zustand";
 
-import { create } from 'zustand';
+const store = JSON.parse(window.localStorage.getItem("report") || "{}");
 
 interface Props {
-  report: string | undefined;
-  setField: (field: string | undefined) => void;
+  reportId: string | undefined;
+  reportName: string | undefined;
+  setReport: (id: string | undefined, name: string | undefined) => void;
 }
 
 const useSetReport = create<Props>((set) => ({
-  report: undefined,
-  setField: async (prop: string | undefined) => {
-    set({ report: prop });
+  reportId: store.clientId,
+  reportName: store.clientName,
+  setReport: async (id: string | undefined, name: string | undefined) => {
+    set((state) => ({ ...state, reportId: id, reportName: name }));
+    window.localStorage.setItem(
+      "report",
+      JSON.stringify({ reportId: id, reportName: name })
+    );
   },
 }));
 

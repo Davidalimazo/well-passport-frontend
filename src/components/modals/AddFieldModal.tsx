@@ -1,17 +1,16 @@
 import { FC } from "react";
-import { Modal, Avatar, Input } from "@mantine/core";
+import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { TbWorldLongitude } from "react-icons/tb";
-import { AiTwotoneMail } from "react-icons/ai";
 import { FieldDataProp } from "../../pages/Fields";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { clientRoutes, fieldRoutes } from "../../utils/constants/api";
+import { fieldRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
 import { MdEmail } from "react-icons/md";
 
@@ -62,8 +61,9 @@ const AddFieldModal: FC<ViewModalProps> = ({
   const navigate = useNavigate();
   const { errors, isDirty, isValid, isSubmitting } = formState;
   const { token } = useAuth((state) => state);
-
+  console.log(clientData);
   const onSubmit = async (data: FieldsValues) => {
+    console.log(data);
     try {
       if (isEdit) {
         await axios

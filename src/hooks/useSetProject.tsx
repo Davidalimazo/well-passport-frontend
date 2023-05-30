@@ -1,16 +1,22 @@
-'use client';
+import { create } from "zustand";
 
-import { create } from 'zustand';
+const store = JSON.parse(window.localStorage.getItem("project") || "{}");
 
 interface Props {
-  project: string | undefined;
-  setField: (field: string | undefined) => void;
+  projectId: string | undefined;
+  projectName: string | undefined;
+  setProject: (id: string | undefined, name: string | undefined) => void;
 }
 
 const useSetProject = create<Props>((set) => ({
-  project: undefined,
-  setField: async (prop: string | undefined) => {
-    set({ project: prop });
+  projectId: store.clientId,
+  projectName: store.clientName,
+  setProject: async (id: string | undefined, name: string | undefined) => {
+    set((state) => ({ ...state, projectId: id, projectName: name }));
+    window.localStorage.setItem(
+      "project",
+      JSON.stringify({ projectId: id, projectName: name })
+    );
   },
 }));
 

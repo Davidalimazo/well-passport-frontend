@@ -8,9 +8,9 @@ import { TbWorldLongitude } from "react-icons/tb";
 import { AiTwotoneMail } from "react-icons/ai";
 import { MdDateRange } from "react-icons/md";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
-import useSetWells from "../../hooks/useSetWells";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import useSetField from "../../hooks/useSetField";
 
 interface ViewModalProps {
   open: () => void;
@@ -21,17 +21,16 @@ interface ViewModalProps {
 }
 
 const ViewFieldModal: FC<ViewModalProps> = ({
-  open,
   opened,
   close,
   title,
   clientData,
 }) => {
-  const setFieldFun = useSetWells();
+  const { setField } = useSetField((state) => state);
   const navigate = useNavigate();
-  const setFielD = (field: string | undefined) => {
-    setFieldFun.setField(field);
-    navigate("/wells");
+  const setFielD = (fieldId: string, fieldName: string) => {
+    setField(fieldId, fieldName);
+    navigate("/home/client/well");
   };
 
   const formattedDate = clientData?.createdAt
@@ -67,16 +66,18 @@ const ViewFieldModal: FC<ViewModalProps> = ({
           </div>
           <div className="flex flex-row gap-6 items-center justify-center">
             <Button
-              children="Wells"
+              children="Close"
               variant="filled"
               className="font-lekton h-[28px] w-[122px]"
-              onClick={() => setFielD(clientData?.name)}
+              onClick={close}
             />
             <Button
-              onClick={() => null}
-              children="Action"
+              children="Wells"
               variant="outline_black"
               className="text-black font-lekton h-[28px] w-[122px]"
+              onClick={() =>
+                setFielD(clientData?._id as string, clientData?.name as string)
+              }
             />
           </div>
           <div className="pt-8 px-6">

@@ -1,16 +1,22 @@
-'use client';
+import { create } from "zustand";
 
-import { create } from 'zustand';
+const store = JSON.parse(window.localStorage.getItem("well") || "{}");
 
 interface Props {
-  wells: string | undefined;
-  setField: (field: string | undefined) => void;
+  wellId: string | undefined;
+  wellName: string | undefined;
+  setWell: (id: string | undefined, name: string | undefined) => void;
 }
 
 const useSetWells = create<Props>((set) => ({
-  wells: undefined,
-  setField: async (prop: string | undefined) => {
-    set({ wells: prop });
+  wellId: store.clientId,
+  wellName: store.clientName,
+  setWell: async (id: string | undefined, name: string | undefined) => {
+    set((state) => ({ ...state, wellId: id, wellName: name }));
+    window.localStorage.setItem(
+      "well",
+      JSON.stringify({ wellId: id, wellName: name })
+    );
   },
 }));
 

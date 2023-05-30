@@ -1,16 +1,13 @@
-import { FC } from 'react';
-import { Modal, Avatar } from '@mantine/core';
-import Button from '../buttons/Button';
-import { BsFillBuildingsFill } from 'react-icons/bs';
-import { FaUser } from 'react-icons/fa';
-import { IoCall } from 'react-icons/io5';
-import { ClientDataProp } from '@/pages/client';
-import Image, { StaticImageData } from 'next/image';
-import useSetField from '@/hooks/useSetField';
-import router from 'next/router';
-import { ProjectDataProp } from '@/pages/project';
-import useSetProject from '@/hooks/useSetProject';
-import useSetReport from '@/hooks/useSetReport';
+import { FC } from "react";
+import { Modal, Avatar } from "@mantine/core";
+import Button from "../buttons/Button";
+import { BsFillBuildingsFill } from "react-icons/bs";
+import { FaUser } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { ProjectDataProp } from "../../pages/Project";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import useSetProject from "../../hooks/useSetProject";
 
 interface ViewModalProps {
   open: () => void;
@@ -20,28 +17,36 @@ interface ViewModalProps {
   clientData: ProjectDataProp | null;
 }
 
-const ViewModal: FC<ViewModalProps> = ({
-  open,
+const ViewProjectModal: FC<ViewModalProps> = ({
   opened,
   close,
   title,
   clientData,
 }) => {
-  const setFieldFun = useSetReport();
-  const setFielD = (field: string | undefined) => {
-    setFieldFun.setField(field);
-    router.push('/report');
+  const navigate = useNavigate();
+  const { setProject } = useSetProject((state) => state);
+  const setFielD = (
+    projectId: string | undefined,
+    projectName: string | undefined
+  ) => {
+    setProject(projectId, projectName);
+    navigate("/home/client/report");
   };
+
+  const formattedDate = clientData?.createdAt
+    ? format(new Date(clientData?.createdAt as string), "dd-MM-yyyy")
+    : "";
+
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}
           </div>
           <div className="flex flex-row items-center justify-center pb-8">
             {clientData?.image ? (
-              <Image
+              <img
                 alt={clientData.name}
                 src={clientData.image}
                 height={99}
@@ -61,15 +66,16 @@ const ViewModal: FC<ViewModalProps> = ({
           </div>
           <div className="flex flex-row gap-6 items-center justify-center">
             <Button
-              onClick={() => setFielD(clientData?.name)}
-              children="Reports"
-              variant="outline_black"
-              className="text-black font-lekton h-[28px] w-[122px]"
-            />
-            <Button
+              onClick={close}
               children="Close"
               variant="filled"
-              className="font-lekton h-[28px] w-[122px]"
+              className="text-white font-lekton h-[28px] w-[122px]"
+            />
+            <Button
+              children="Reports"
+              variant="outline_black"
+              className="font-lekton h-[28px] w-[122px] text-black"
+              onClick={() => setFielD(clientData?._id, clientData?.name)}
             />
           </div>
           <div className="pt-8 px-6">
@@ -111,7 +117,13 @@ const ViewModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Start Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.startDate}
+                  {clientData?.startDate
+                    ? format(
+                        new Date(clientData?.startDate as string),
+                        "dd-MM-yyyy"
+                      )
+                    : ""}
+                  {}
                 </div>
               </div>
               <div className="space-y-4">
@@ -120,7 +132,12 @@ const ViewModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">End Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.endDate}
+                  {clientData?.endDate
+                    ? format(
+                        new Date(clientData?.endDate as string),
+                        "dd-MM-yyyy"
+                      )
+                    : ""}
                 </div>
               </div>
             </div>
@@ -142,7 +159,7 @@ const ViewModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Created Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.createdDate}
+                  {formattedDate}
                 </div>
               </div>
             </div>
@@ -153,4 +170,4 @@ const ViewModal: FC<ViewModalProps> = ({
   );
 };
 
-export default ViewModal;
+export default ViewProjectModal;

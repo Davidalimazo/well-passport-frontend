@@ -13,45 +13,51 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
-import {  fieldRoutes } from "../utils/constants/api";
-import ViewFieldModal from "../components/modals/ViewFieldModal";
-import AddClientFieldModal from "../components/modals/AddClientFieldModal";
+import { wellRoutes } from "../utils/constants/api";
+import ViewWellModal from "../components/modals/ViewWellModal";
+import AddWellModal from "../components/modals/AddWellModal";
 import { BsArrowRight } from "react-icons/bs";
-import useSetClient from "../hooks/useSetClient";
+import useSetField from "../hooks/useSetField";
 
-export interface FieldDataProp {
-  _id: string;
-  fieldId: string;
+export interface WellDataProp {
+  wellId: string;
   adminId: string;
+  fieldId: string;
   clientId: string;
   name: string;
-  numberOfWells: number;
+  treeSpecs: number;
   image: string;
+  wellType: string;
   longitude: number;
   latitude: number;
-  superintendent: {
-    name: string;
-    email: string;
-    mobileNo: string;
-  };
+  status: string;
+  spudDate: string;
+  firstProductionDate: string;
+  initialCompletionDate: string;
+  bitSize: number;
+  casting: number;
+  totalDepth: number;
+  turbingSize: number;
+  flowStation: string;
+  _id: string;
   createdAt: string;
   updatedAt: string;
 }
-
 //@ts-ignore
 
-const ClientFieldList = () => {
+const WellFieldList = () => {
   const [index, setIndex] = useState(0);
-  const [fieldId, setFieldId] = useState("");
+  const { fieldName } = useSetField((state) => state);
+  const [wellId, setWellId] = useState("");
   const { token, user } = useAuth((state) => state);
-  const { clientId, clientName } = useSetClient((state) => state);
 
-  const [cachedData, setCachedDta] = useState<Array<FieldDataProp> | null>([]);
+  const [cachedData, setCachedDta] = useState<Array<WellDataProp> | null>([]);
 
   useEffect(() => {
     const getData = async () => {
+      const yu = JSON.parse(window.localStorage.getItem("field") || "{}");
       await axios
-        .get(fieldRoutes + `/client/${clientId}`, {
+        .get(wellRoutes + `/field/${yu.fieldId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -64,13 +70,13 @@ const ClientFieldList = () => {
   }, []);
   const navigate = useNavigate();
 
-  const [currData, setCurrData] = useState<FieldDataProp | null>(null);
+  const [currData, setCurrData] = useState<WellDataProp | null>(null);
 
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleDelete = async (id: string) => {
     await axios
-      .delete(fieldRoutes + `/${id}`, {
+      .delete(wellRoutes + `/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -99,7 +105,7 @@ const ClientFieldList = () => {
   return (
     <>
       <Helmet>
-        <title key="pagetitle">Zamam Well Passport | Fields</title>
+        <title key="pagetitle">Zamam Well Passport | Wells</title>
         <meta
           name="description"
           content="Zamam Well Passport application"
@@ -115,7 +121,11 @@ const ClientFieldList = () => {
               <BsArrowRight />
             </div>
             <div className="flex flex-row items-center gap-1">
-              <Link to="#">Field</Link>
+              <Link to="/home/client/field">Field</Link>
+              <BsArrowRight />
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              <Link to="#">Well</Link>
             </div>
           </div>
         </div>
@@ -132,14 +142,15 @@ const ClientFieldList = () => {
             }
           />
         </div>
+
         <div className="flex flex-row items-center justify-between px-6 pb-2">
           <div className="text-[15px] sm:text-[20px] tracking-wide font-bold font-lekton">
-            {clientName?.toUpperCase()} FIELD LIST
+            {fieldName?.toUpperCase()} WELL LIST
           </div>
           {user?.role === "ADMIN" ? (
             <div className="text-center flex flex-row items-center">
               <Button
-                children="ADD NEW FIELD"
+                children="ADD NEW WELL"
                 className="h-[28px] text-sm lg:text-md w-3/3"
                 onClick={openAddModal}
                 icon={
@@ -154,19 +165,7 @@ const ClientFieldList = () => {
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
           {cachedData &&
             cachedData.map(
-              (
-                {
-                  _id: id,
-                  name,
-                  numberOfWells,
-                  image,
-                  longitude,
-                  latitude,
-                  createdAt,
-                  ...rest
-                },
-                i
-              ) => (
+              ({ _id: id, name, wellType, image, status, ...rest }, i) => (
                 <div
                   className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
                     i === index
@@ -179,11 +178,9 @@ const ClientFieldList = () => {
                     setCurrData({
                       _id: id,
                       name,
-                      numberOfWells,
-                      longitude,
-                      latitude,
+                      wellType,
                       image,
-                      createdAt,
+                      status,
                       ...rest,
                     });
                   }}
@@ -200,18 +197,16 @@ const ClientFieldList = () => {
                     </div>
                     <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
                       <div className="">
-                        <span className="text-grey-200">Field Name: </span>
+                        <span className="text-grey-200">Well Name: </span>
                         <span className="font-bold">{name}</span>
                       </div>
                       <div className="">
-                        <span className="text-grey-200">Wells: </span>
-                        <span className="font-semibold">{numberOfWells}</span>
+                        <span className="text-grey-200">Well Type: </span>
+                        <span className="font-semibold">{wellType}</span>
                       </div>
                       <div className="">
-                        <span className="text-grey-200">Superintendent: </span>
-                        <span className="font-bold underline">
-                          {rest.superintendent.name}
-                        </span>
+                        <span className="text-grey-200">Status: </span>
+                        <span className="font-semibold">{status}</span>
                       </div>
                     </div>
                   </div>
@@ -226,7 +221,7 @@ const ClientFieldList = () => {
                           <MdDeleteForever
                             onClick={() => {
                               openDeleteModal();
-                              setFieldId(id);
+                              setWellId(id);
                             }}
                           />
                         </>
@@ -245,25 +240,25 @@ const ClientFieldList = () => {
           </div>
         </div>
       </div>
-      <ViewFieldModal
+      <ViewWellModal
         open={open}
         opened={opened}
         close={close}
-        title="FIELD INFORMATION"
+        title="WELL INFORMATION"
         clientData={currData}
       />
-      <AddClientFieldModal
+      <AddWellModal
         open={openAddModal}
         opened={openedAddModal}
         close={onClose}
-        title="ADD NEW FIELD"
+        title="ADD WELL FIELD"
         clientData={currData}
       />
-      <AddClientFieldModal
+      <AddWellModal
         open={openEditModal}
         opened={openedEditModal}
         close={onCloseEdit}
-        title="EDIT CLIENT INFORMATION"
+        title="EDIT WELL INFORMATION"
         clientData={currData}
         isEdit
       />
@@ -271,12 +266,12 @@ const ClientFieldList = () => {
         open={openDeleteModal}
         opened={openedDeleteModal}
         close={onCloseDelete}
-        text="Are you sure you want to delete this client"
-        id={fieldId}
-        onDelete={() => handleDelete(fieldId)}
+        text="Are you sure you want to delete this well"
+        id={wellId}
+        onDelete={() => handleDelete(wellId)}
       />
     </>
   );
 };
 
-export default ClientFieldList;
+export default WellFieldList;

@@ -1,12 +1,9 @@
-import { FC } from 'react';
-import { Modal, Input } from '@mantine/core';
-import Button from '../buttons/Button';
-import { ProjectDataProp } from '@/pages/project';
-import { HiDocumentText } from 'react-icons/hi';
-import { MdDateRange } from 'react-icons/md';
-import { GiField, GiHobbitDwelling } from 'react-icons/gi';
-import { IoDocumentText } from 'react-icons/io5';
-import { FaCloudUploadAlt, FaUser } from 'react-icons/fa';
+import { FC } from "react";
+import { Modal, Input } from "@mantine/core";
+import Button from "../buttons/Button";
+
+import { IoDocumentText } from "react-icons/io5";
+import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 
 interface ViewModalProps {
   open: () => void;
@@ -14,10 +11,10 @@ interface ViewModalProps {
   opened: boolean;
 }
 
-const AddReportModal: FC<ViewModalProps> = ({ open, opened, close }) => {
+const AddReportModal: FC<ViewModalProps> = ({ opened, close }) => {
   return (
     <>
-      <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
+      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             ADD NEW REPORT
