@@ -13,7 +13,6 @@ import { WellDataProp } from "../../pages/Well";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import useAuth from "../../utils/auth";
 import { wellRoutes } from "../../utils/constants/api";
 import useSetField from "../../hooks/useSetField";
@@ -80,7 +79,6 @@ const AddWellModal: FC<ViewModalProps> = ({
   });
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
-  const navigate = useNavigate();
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -131,11 +129,10 @@ const AddWellModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
-        console.log(data);
         await axios
           .post(
             wellRoutes,
@@ -182,7 +179,7 @@ const AddWellModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       }
@@ -193,7 +190,15 @@ const AddWellModal: FC<ViewModalProps> = ({
 
   return (
     <>
-      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
+      <Modal
+        radius={"md"}
+        size="lg"
+        opened={opened}
+        onClose={() => {
+          close();
+          location.reload();
+        }}
+      >
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             {title}

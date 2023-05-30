@@ -9,7 +9,6 @@ import { FieldDataProp } from "../../pages/Fields";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { fieldRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
 import { MdEmail } from "react-icons/md";
@@ -58,7 +57,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
         },
       },
     });
-  const navigate = useNavigate();
+
   const { errors, isDirty, isValid, isSubmitting } = formState;
   const { token } = useAuth((state) => state);
   console.log(clientData);
@@ -82,7 +81,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -102,7 +101,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Account created successfully");
             reset();
-            navigate(0);
+            location.reload();
           });
       }
     } catch (error) {
@@ -118,7 +117,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate(0);
+          location.reload();
         }}
       >
         <div className="space-y-6">

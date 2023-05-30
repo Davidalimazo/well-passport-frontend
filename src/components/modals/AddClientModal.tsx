@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { MdEmail } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { clientRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
 
@@ -56,7 +55,7 @@ const AddClientModal: FC<ViewModalProps> = ({
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
-  const navigate = useNavigate();
+
   const onSubmit = async (data: FieldsValues) => {
     try {
       if (isEdit) {
@@ -86,7 +85,7 @@ const AddClientModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -118,7 +117,7 @@ const AddClientModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       }
@@ -135,7 +134,7 @@ const AddClientModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate(0);
+          location.reload();
         }}
       >
         <div className="space-y-6">
