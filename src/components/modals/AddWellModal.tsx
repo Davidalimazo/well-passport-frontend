@@ -131,7 +131,7 @@ const AddWellModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client/well", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -182,7 +182,7 @@ const AddWellModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client/well", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       }
@@ -199,7 +199,7 @@ const AddWellModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate("/home/client/well", { replace: true });
+          navigate(0);
         }}
       >
         <div className="space-y-6">

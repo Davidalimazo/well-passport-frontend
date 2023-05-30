@@ -70,7 +70,7 @@ const ClientListUi = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        navigate("/home/client", { replace: true });
+        navigate(0);
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)

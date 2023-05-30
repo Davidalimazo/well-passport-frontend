@@ -44,6 +44,7 @@ const FieldListUI = () => {
   const { token, user } = useAuth((state) => state);
 
   const [cachedData, setCachedDta] = useState<Array<FieldDataProp> | null>([]);
+  const [currData, setCurrData] = useState<FieldDataProp | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -59,8 +60,6 @@ const FieldListUI = () => {
   }, []);
   const navigate = useNavigate();
 
-  const [currData, setCurrData] = useState<FieldDataProp | null>(null);
-
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleDelete = async (id: string) => {
@@ -73,7 +72,7 @@ const FieldListUI = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        navigate("/home/field", { replace: true });
+        navigate(0);
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)

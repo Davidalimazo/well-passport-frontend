@@ -46,6 +46,7 @@ const WellProjectList = () => {
   const [cachedData, setCachedDta] = useState<Array<ProjectDataProp> | null>(
     []
   );
+  const [currData, setCurrData] = useState<ProjectDataProp | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -63,8 +64,6 @@ const WellProjectList = () => {
   }, []);
   const navigate = useNavigate();
 
-  const [currData, setCurrData] = useState<ProjectDataProp | null>(null);
-
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleDelete = async (id: string) => {
@@ -77,7 +76,7 @@ const WellProjectList = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        navigate("/home/client/project", { replace: true });
+        navigate(0);
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)

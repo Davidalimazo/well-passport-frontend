@@ -103,7 +103,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
 
         toast.success("Client update successfully");
         reset();
-        navigate("/home/client/project", { replace: true });
+        navigate(0);
       } else {
         await axios
           .post(
@@ -137,7 +137,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client/project", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       }
@@ -154,7 +154,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate("/home/client/project", { replace: true });
+          navigate(0);
         }}
       >
         <div className="space-y-6">

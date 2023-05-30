@@ -82,7 +82,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/field", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -102,7 +102,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Account created successfully");
             reset();
-            navigate("/home/field", { replace: true });
+            navigate(0);
           });
       }
     } catch (error) {
@@ -118,7 +118,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate("/home/field", { replace: true });
+          navigate(0);
         }}
       >
         <div className="space-y-6">

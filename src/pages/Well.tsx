@@ -52,6 +52,7 @@ const WellFieldList = () => {
   const { token, user } = useAuth((state) => state);
 
   const [cachedData, setCachedDta] = useState<Array<WellDataProp> | null>([]);
+  const [currData, setCurrData] = useState<WellDataProp | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -70,8 +71,6 @@ const WellFieldList = () => {
   }, []);
   const navigate = useNavigate();
 
-  const [currData, setCurrData] = useState<WellDataProp | null>(null);
-
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleDelete = async (id: string) => {
@@ -84,7 +83,7 @@ const WellFieldList = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        navigate("/home/client/well", { replace: true });
+        navigate(0);
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)

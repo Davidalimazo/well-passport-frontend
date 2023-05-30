@@ -86,7 +86,7 @@ const AddClientModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -118,7 +118,7 @@ const AddClientModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client", { replace: true });
+            close();
           })
           .catch((err) => console.log(err.message));
       }
@@ -135,7 +135,7 @@ const AddClientModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate("/home/client", { replace: true });
+          navigate(0);
         }}
       >
         <div className="space-y-6">

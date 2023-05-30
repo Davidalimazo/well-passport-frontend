@@ -46,6 +46,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
   clientData,
 }) => {
   const { clientId } = useSetClient((state) => state);
+
   const { register, handleSubmit, formState, setError, clearErrors, reset } =
     useForm<FieldsValues>({
       defaultValues: {
@@ -94,7 +95,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate("/home/client/field", { replace: true });
+            navigate(0);
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -124,7 +125,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Account created successfully");
             reset();
-            navigate("/home/client/field", { replace: true });
+            navigate(0);
           });
       }
     } catch (error) {
@@ -140,7 +141,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate("/home/client/field", { replace: true });
+          navigate(0);
         }}
       >
         <div className="space-y-6">

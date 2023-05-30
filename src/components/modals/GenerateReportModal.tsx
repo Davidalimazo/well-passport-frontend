@@ -6,6 +6,7 @@ import Button from "../buttons/Button";
 import { MdDateRange } from "react-icons/md";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { GrStatusUnknown } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 
 interface ViewModalProps {
   open: () => void;
@@ -14,9 +15,18 @@ interface ViewModalProps {
 }
 
 const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
+  const navigate = useNavigate();
   return (
     <>
-      <Modal radius={"md"} size="lg" opened={opened} onClose={close}>
+      <Modal
+        radius={"md"}
+        size="lg"
+        opened={opened}
+        onClose={() => {
+          close();
+          navigate(0);
+        }}
+      >
         <div className="space-y-6">
           <div className="text-center text-[14px] font-bold font-lekton uppercase">
             GENERATE REPORT
