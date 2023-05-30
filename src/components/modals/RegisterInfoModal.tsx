@@ -1,10 +1,6 @@
 import { FC } from "react";
-import { Modal, Avatar } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import Button from "../buttons/Button";
-import { BsFillBuildingsFill } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
-import cautionImg from "../../assets/images/caution.png";
 import successImg from "../../assets/images/success.png";
 import { useNavigate } from "react-router-dom";
 
@@ -16,13 +12,7 @@ interface ViewModalProps {
   text: string;
 }
 
-const RegisterModal: FC<ViewModalProps> = ({
-  open,
-  opened,
-  close,
-  text,
-  onDelete,
-}) => {
+const RegisterModal: FC<ViewModalProps> = ({ opened, close, text }) => {
   const navigate = useNavigate();
 
   const refreshPage = () => {
