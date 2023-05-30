@@ -7,7 +7,6 @@ import { MdDateRange } from "react-icons/md";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { GrStatusUnknown } from "react-icons/gr";
 import useAuth from "../../utils/auth";
-import { useNavigate } from "react-router-dom";
 import { projectRoutes } from "../../utils/constants/api";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -69,11 +68,11 @@ const AddProjectModal: FC<ViewModalProps> = ({
       wellId: well.wellId,
     },
   });
-  console.log(clientData);
+
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
-  const navigate = useNavigate();
+  
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -103,7 +102,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
 
         toast.success("Client update successfully");
         reset();
-        navigate(0);
+        location.reload()
       } else {
         await axios
           .post(
@@ -137,7 +136,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            navigate(0);
+            location.reload()
           })
           .catch((err) => console.log(err.message));
       }
@@ -154,7 +153,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          navigate(0);
+          location.reload()
         }}
       >
         <div className="space-y-6">

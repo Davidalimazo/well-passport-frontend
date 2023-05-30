@@ -16,7 +16,7 @@ const RegisterModal: FC<ViewModalProps> = ({ opened, close, text }) => {
   const navigate = useNavigate();
 
   const refreshPage = () => {
-    navigate(0);
+    location.reload()
   };
   return (
     <>

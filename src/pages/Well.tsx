@@ -9,7 +9,6 @@ import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
@@ -69,7 +68,6 @@ const WellFieldList = () => {
     };
     getData();
   }, []);
-  const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -83,7 +81,7 @@ const WellFieldList = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        navigate(0);
+        location.reload();
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)
