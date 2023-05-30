@@ -264,6 +264,7 @@ const Register = ({}: loginProps) => {
           open={open}
           opened={opened}
           text={errotText}
+          isError
         />
         <RegisterModal
           close={onCloseAddModal}

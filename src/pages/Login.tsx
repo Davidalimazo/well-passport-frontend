@@ -157,6 +157,7 @@ const Login = ({}: loginProps) => {
           open={open}
           opened={opened}
           text={errorText}
+          isError
         />
       </div>
     </>

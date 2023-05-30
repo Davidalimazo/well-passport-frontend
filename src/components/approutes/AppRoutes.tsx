@@ -12,6 +12,9 @@ import ClientOutlet from "../../pages/ClientOutlet";
 import ClientFieldList from "../../pages/ClientField";
 import WellFieldList from "../../pages/Well";
 import WellProjectList from "../../pages/Project";
+import Settings from "../../pages/Settings";
+import SettingsOutlet from "../../pages/SettingsOutlet";
+import ChangePassword from "../../pages/ChangePassword";
 
 const AppRoutes = () => {
   const { user } = useAuth((state) => state);
@@ -33,6 +36,12 @@ const AppRoutes = () => {
             <Route path="project" element={<WellProjectList />} />
           </Route>
           <Route path="field" element={<FieldListUI />} />
+          <Route path="settings" element={<Settings />}>
+            <Route path="set" element={<SettingsOutlet />}>
+              <Route path="change-password" element={<ChangePassword />} />
+            </Route>
+            <Route path="*" element={<>No Route Here</>} />
+          </Route>
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

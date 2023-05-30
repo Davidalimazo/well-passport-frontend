@@ -7,5 +7,6 @@ export const projectRoutes = BASE_URI + "project";
 
 export const apiRoutes = {
   login: authRoutes + "/login",
+  changePassword: authRoutes + "/changepassword/",
   getWellProjects: projectRoutes + "/well/",
 };
