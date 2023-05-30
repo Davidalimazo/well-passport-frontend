@@ -10,6 +10,7 @@ import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { fieldRoutes } from "../utils/constants/api";
@@ -56,6 +57,7 @@ const FieldListUI = () => {
     };
     getData();
   }, []);
+  const navigate = useNavigate();
 
   const [currData, setCurrData] = useState<FieldDataProp | null>(null);
 
@@ -71,7 +73,7 @@ const FieldListUI = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        location.reload();
+        navigate("/home/field", { replace: true });
       })
       .catch((err) =>
         toast.error("An error while deleting post " + err.message)
