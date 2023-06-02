@@ -62,7 +62,7 @@ const Login = ({}: loginProps) => {
           key="metadescription"
         />
       </Helmet>
-      <div className="flex flex-row justify-center px-5 lg:px-10 items-center  mt-24 sm:mt-36">
+      <div className="flex flex-row justify-center px-5 lg:px-10 items-center  mt-24 sm:mt-14">
         <div className="flex space-y-2 flex-col items-center px-4 py-4 lg:px-12 lg:py-12 shadow-lg border shadow-grey-500/50 bg-white rounded-lg">
           <img src={userImg} alt="user image" />
           <div className="text-lg font-lekton font-semibold">LOG IN</div>

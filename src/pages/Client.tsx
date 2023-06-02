@@ -109,12 +109,12 @@ const ClientListUi = () => {
         />
       </Helmet>
       <div className="overflow-x-hidden bg-[#E7E6E6]">
-        <div className="flex flex-row items-center justify-center mt-">
+        <div className="flex flex-row items-center justify-center mt-5">
           <Input
             placeholder="Search"
             radius="xl"
             size="lg"
-            className="w-1/2 mt-12 mb-12"
+            className="w-full sm:w-1/2 mt-10 mb-10"
             rightSection={
               <>
                 <BiSearch />

@@ -17,7 +17,7 @@ export default function SplashScreen() {
         setTimeout(() => {
           if (auth?.email) navigate("/home");
           else navigate("/login");
-        }, 4000)
+        }, 1000)
       );
     };
     loader();
@@ -33,7 +33,7 @@ export default function SplashScreen() {
           key="metadescription"
         />
       </Helmet>
-      <div className="min-h-screen min-w-screen flex flex-col items-center justify-center relative">
+      <div className="h-screen flex flex-col items-center justify-center relative">
         <div className="">
           <img
             alt="Zamam Well passport logo"

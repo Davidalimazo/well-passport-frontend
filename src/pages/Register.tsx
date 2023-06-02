@@ -98,9 +98,9 @@ const Register = ({}: loginProps) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row items-center justify-center mt-24">
+          <div className="flex flex-row items-center justify-center mt-8">
             <div className=""></div>
-            <div className="bg-white p-8 min-w-[90%] sm:min-w-[60%] lg:min-w-[50%] shadow-md rounded-md">
+            <div className="bg-white p-8 shadow-md rounded-md">
               <form
                 className="flex flex-col gap-4"
                 onSubmit={handleSubmit(onSubmit)}

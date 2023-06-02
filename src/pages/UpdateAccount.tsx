@@ -68,7 +68,7 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
   };
 
   return (
-    <div className="flex justify-center items-center h-[50vh]">
+    <div className="flex justify-center items-center">
       <div className="flex flex-col items-center">
         {file?.file ? (
           file.path.map((path: string) => (
