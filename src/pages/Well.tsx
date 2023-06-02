@@ -3,7 +3,6 @@ import { BiSearch } from "react-icons/bi";
 import { AiFillEye, AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { useEffect, useState } from "react";
-import placeholderImg from "../assets/images/placeholderImg.png";
 import { useDisclosure } from "@mantine/hooks";
 import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
@@ -17,6 +16,7 @@ import ViewWellModal from "../components/modals/ViewWellModal";
 import AddWellModal from "../components/modals/AddWellModal";
 import { BsArrowRight } from "react-icons/bs";
 import useSetField from "../hooks/useSetField";
+import { imageUrlChecker } from "./Client";
 
 export interface WellDataProp {
   wellId: string;
@@ -63,7 +63,12 @@ const WellFieldList = () => {
             "Content-Type": "application/json",
           },
         })
-        .then((res) => setCachedDta(res.data))
+        .then((res) => {
+          const resData = res.data.map((item: any) => {
+            return { ...item, image: item?.image?.split("/")[1] };
+          });
+          setCachedDta(resData);
+        })
         .catch((err) => console.log(err.message));
     };
     getData();
@@ -80,11 +85,11 @@ const WellFieldList = () => {
         },
       })
       .then((_) => {
-        toast.success("Client deleted succcessfully");
+        toast.success("Well deleted succcessfully");
         location.reload();
       })
       .catch((err) =>
-        toast.error("An error while deleting post " + err.message)
+        toast.error("An error while deleting well " + err.message)
       );
   };
 
@@ -184,7 +189,7 @@ const WellFieldList = () => {
                 >
                   <div className="flex flex-row gap-6 items-center">
                     <img
-                      src={placeholderImg}
+                      src={imageUrlChecker(image)}
                       width={130}
                       height={89}
                       alt="exxon"
@@ -232,7 +237,7 @@ const WellFieldList = () => {
             )}
           <div className="my-6 flex flex-row items-center justify-center">
             {cachedData && cachedData.length < 1 ? (
-              <p>No Fields Available</p>
+              <p>No Wells Available</p>
             ) : null}
           </div>
         </div>

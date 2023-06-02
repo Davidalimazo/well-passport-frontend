@@ -1,8 +1,8 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { BsFillBuildingsFill } from "react-icons/bs";
-import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { TbWorldLongitude } from "react-icons/tb";
 import { ImLocation } from "react-icons/im";
@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import { MdEmail } from "react-icons/md";
 import { clientRoutes } from "../../utils/constants/api";
 import useAuth from "../../utils/auth";
+import UploadDocs from "../UploadDoc";
 
 interface ViewModalProps {
   open: () => void;
@@ -56,6 +57,8 @@ const AddClientModal: FC<ViewModalProps> = ({
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
 
+  const [file, setFile] = useState<any>(null);
+
   const onSubmit = async (data: FieldsValues) => {
     try {
       if (isEdit) {
@@ -89,38 +92,34 @@ const AddClientModal: FC<ViewModalProps> = ({
           })
           .catch((err) => console.log(err.message));
       } else {
-        await axios
-          .post(
-            clientRoutes,
-            {
-              name: data.name,
+        if (file?.file) {
+          const formData = new FormData();
+          formData.append("file", file?.file);
+          formData.append("name", data.name);
+          formData.append("contactPerson", data.contactPerson);
+          formData.append("mobile", data.mobile);
+          formData.append("email", data.email);
+          formData.append("address", data.address);
+          formData.append("ownerId", data.ownerId);
+          formData.append("website", data.website);
 
-              contactPerson: data.contactPerson,
-
-              mobile: data.mobile,
-
-              email: data.email,
-
-              address: data.address,
-
-              ownerId: data.ownerId,
-
-              website: data.website,
-            },
-            {
+          await axios
+            .post(clientRoutes, formData, {
               headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                "Content-Type": "multipart/form-data",
               },
-            }
-          )
-          .then((_) => {
-            toast.success("Client update successfully");
-            reset();
-            close();
-            location.reload();
-          })
-          .catch((err) => console.log(err.message));
+            })
+            .then((_) => {
+              toast.success("Client update successfully");
+              reset();
+              close();
+              location.reload();
+            })
+            .catch((err) => console.log(err.message));
+        } else {
+          alert("Please upload picture");
+        }
       }
     } catch (error) {
       toast.error("An error occurred, please try again");
@@ -355,18 +354,19 @@ const AddClientModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="mb-4">
-              <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                <div className="text-center space-y-1 text-sm font-lekton">
-                  <div className="flex flex-row items-center justify-center">
-                    <FaCloudUploadAlt className="" size={30} />
-                  </div>
-                  <div className="">Click here to upload logo</div>
+            {!isEdit && (
+              <div className="mb-4">
+                <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
+                  <div className="text-center space-y-1 text-sm font-lekton">
+                    {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
-                  <div className="">Drag Logo Here</div>
+                  <div className="">Drag Logo Here</div> */}
+                    <UploadDocs name={``} setFile={setFile} file={file} />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
             <div className="mb-4 w-full flex flex-row items-center justify-center mt-8">
               <Button
                 children="Submit"

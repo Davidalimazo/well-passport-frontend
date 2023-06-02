@@ -9,8 +9,8 @@ interface Props {
 }
 
 const useSetProject = create<Props>((set) => ({
-  projectId: store.clientId,
-  projectName: store.clientName,
+  projectId: store.projectId,
+  projectName: store.projectName,
   setProject: async (id: string | undefined, name: string | undefined) => {
     set((state) => ({ ...state, projectId: id, projectName: name }));
     window.localStorage.setItem(

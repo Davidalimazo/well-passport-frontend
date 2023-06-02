@@ -3,7 +3,6 @@ import { BiSearch } from "react-icons/bi";
 import { AiFillEye, AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { useEffect, useState } from "react";
-import placeholderImg from "../assets/images/placeholderImg.png";
 import { useDisclosure } from "@mantine/hooks";
 import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
@@ -16,6 +15,7 @@ import { apiRoutes, projectRoutes } from "../utils/constants/api";
 import { BsArrowRight } from "react-icons/bs";
 import ViewProjectModal from "../components/modals/ViewProjectModal";
 import AddProjectModal from "../components/modals/AddProjectModal";
+import { imageUrlChecker } from "./Client";
 
 export interface ProjectDataProp {
   wellId: string;
@@ -56,12 +56,16 @@ const WellProjectList = () => {
             "Content-Type": "application/json",
           },
         })
-        .then((res) => setCachedDta(res.data))
+        .then((res) => {
+          const resData = res.data.map((item: any) => {
+            return { ...item, image: item?.image?.split("/")[1] };
+          });
+          setCachedDta(resData);
+        })
         .catch((err) => console.log(err.message));
     };
     getData();
   }, []);
-
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -74,11 +78,11 @@ const WellProjectList = () => {
         },
       })
       .then((_) => {
-        toast.success("Client deleted succcessfully");
-        location.reload()
+        toast.success("Project deleted succcessfully");
+        location.reload();
       })
       .catch((err) =>
-        toast.error("An error while deleting post " + err.message)
+        toast.error("An error while deleting project " + err.message)
       );
   };
 
@@ -146,7 +150,7 @@ const WellProjectList = () => {
             <div className="text-center flex flex-row items-center">
               <Button
                 children="ADD NEW PROJECT"
-                className="text-[13px] sm:text-lg h-[28px] w-3/3"
+                className="text-[10px] sm:text-[20px] sm:text-lg h-[28px] w-3/3"
                 onClick={openAddModal}
                 icon={
                   <>
@@ -182,7 +186,7 @@ const WellProjectList = () => {
                 >
                   <div className="flex flex-row gap-6 items-center">
                     <img
-                      src={placeholderImg}
+                      src={imageUrlChecker(image)}
                       width={130}
                       height={89}
                       alt="exxon"
@@ -227,7 +231,7 @@ const WellProjectList = () => {
             )}
           <div className="my-6 flex flex-row items-center justify-center">
             {cachedData && cachedData.length < 1 ? (
-              <p>No Fields Available</p>
+              <p>No Projects Available</p>
             ) : null}
           </div>
         </div>

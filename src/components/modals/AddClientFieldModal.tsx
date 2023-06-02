@@ -1,8 +1,7 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
-import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { TbWorldLongitude } from "react-icons/tb";
 import { useForm } from "react-hook-form";
@@ -13,6 +12,8 @@ import useAuth from "../../utils/auth";
 import { MdEmail } from "react-icons/md";
 import { FieldDataProp } from "../../pages/Fields";
 import useSetClient from "../../hooks/useSetClient";
+import UploadDocs from "../UploadDoc";
+import { FaUser } from "react-icons/fa";
 
 interface ViewModalProps {
   open: () => void;
@@ -61,9 +62,10 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
         },
       },
     });
-  
+
   const { errors, isDirty, isValid, isSubmitting } = formState;
   const { token } = useAuth((state) => state);
+  const [file, setFile] = useState<any>(null);
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -92,39 +94,44 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
             }
           )
           .then((_) => {
-            toast.success("Client update successfully");
+            toast.success("Field update successfully");
             reset();
-            location.reload()
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
-        await axios
-          .post(
-            fieldRoutes,
-            {
-              name: data.name,
-              numberOfWells: data.numberOfWells,
-              longitude: data.longitude,
-              latitude: data.longitude,
-              clientId: clientId,
-              superintendent: {
-                name: data.superintendent.name,
-                email: data.superintendent.email,
-                mobileNo: data.superintendent.mobileNo,
+        if (file?.file) {
+          await axios
+            .post(
+              fieldRoutes,
+              {
+                file: file.file,
+                name: data.name,
+                numberOfWells: data.numberOfWells,
+                longitude: data.longitude,
+                latitude: data.longitude,
+                clientId: clientId,
+                superintendent: {
+                  name: data.superintendent.name,
+                  email: data.superintendent.email,
+                  mobileNo: data.superintendent.mobileNo,
+                },
               },
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((_) => {
-            toast.success("Account created successfully");
-            reset();
-            location.reload()
-          });
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((_) => {
+              toast.success("New field created successfully");
+              reset();
+              location.reload();
+            });
+        } else {
+          alert("Please upload picture");
+        }
       }
     } catch (error) {
       toast.error("An error occurred, please try again");
@@ -139,7 +146,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          location.reload()
+          location.reload();
         }}
       >
         <div className="space-y-6">
@@ -412,18 +419,18 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="mb-4">
-              <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                <div className="text-center space-y-1 text-sm font-lekton">
-                  <div className="flex flex-row items-center justify-center">
-                    <FaCloudUploadAlt className="" size={30} />
-                  </div>
-                  <div className="">Click here to upload field image</div>
+            {!isEdit && (
+              <div className="mb-4">
+                <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
+                  <div className="text-center space-y-1 text-sm font-lekton">
+                    {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
-                  <div className="">Drag Image Here</div>
+                  <div className="">Drag Logo Here</div> */}
+                    <UploadDocs name={``} setFile={setFile} file={file} />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="mb-4 w-full flex flex-row items-center justify-center mt-8">
               <Button
                 children="Submit"

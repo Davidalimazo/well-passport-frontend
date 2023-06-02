@@ -3,7 +3,6 @@ import { BiSearch } from "react-icons/bi";
 import { AiFillEye, AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { useEffect, useState } from "react";
-import placeholderImg from "../assets/images/placeholderImg.png";
 import { useDisclosure } from "@mantine/hooks";
 import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
@@ -17,6 +16,7 @@ import ViewFieldModal from "../components/modals/ViewFieldModal";
 import AddClientFieldModal from "../components/modals/AddClientFieldModal";
 import { BsArrowRight } from "react-icons/bs";
 import useSetClient from "../hooks/useSetClient";
+import { imageUrlChecker } from "./Client";
 
 export interface FieldDataProp {
   _id: string;
@@ -56,12 +56,16 @@ const ClientFieldList = () => {
             "Content-Type": "application/json",
           },
         })
-        .then((res) => setCachedDta(res.data))
+        .then((res) => {
+          const resData = res.data.map((item: any) => {
+            return { ...item, image: item?.image?.split("/")[1] };
+          });
+          setCachedDta(resData);
+        })
         .catch((err) => console.log(err.message));
     };
     getData();
   }, []);
-
 
   const [currData, setCurrData] = useState<FieldDataProp | null>(null);
 
@@ -76,11 +80,11 @@ const ClientFieldList = () => {
         },
       })
       .then((_) => {
-        toast.success("Client deleted succcessfully");
-        location.reload()
+        toast.success("Client field deleted succcessfully");
+        location.reload();
       })
       .catch((err) =>
-        toast.error("An error while deleting post " + err.message)
+        toast.error("An error while deleting client field " + err.message)
       );
   };
 
@@ -189,7 +193,7 @@ const ClientFieldList = () => {
                 >
                   <div className="flex flex-row gap-6 items-center">
                     <img
-                      src={placeholderImg}
+                      src={imageUrlChecker(image)}
                       width={130}
                       height={89}
                       alt="exxon"

@@ -1,8 +1,7 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import { TbWorldLongitude } from "react-icons/tb";
 import { MdDateRange } from "react-icons/md";
 import { FcInspection } from "react-icons/fc";
@@ -17,6 +16,7 @@ import useAuth from "../../utils/auth";
 import { wellRoutes } from "../../utils/constants/api";
 import useSetField from "../../hooks/useSetField";
 import useSetClient from "../../hooks/useSetClient";
+import UploadDocs from "../UploadDoc";
 
 interface ViewModalProps {
   open: () => void;
@@ -56,6 +56,7 @@ const AddWellModal: FC<ViewModalProps> = ({
   const { clientId } = useSetClient((state) => state);
   const { fieldId } = useSetField((state) => state);
   const { token } = useAuth((state) => state);
+  const [file, setFile] = useState<any>(null);
 
   const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
     defaultValues: {
@@ -79,7 +80,6 @@ const AddWellModal: FC<ViewModalProps> = ({
   });
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
- 
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -128,62 +128,67 @@ const AddWellModal: FC<ViewModalProps> = ({
             }
           )
           .then((_) => {
-            toast.success("Client update successfully");
+            toast.success("Well update successfully");
             reset();
-            location.reload()
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
-        console.log(data);
-        await axios
-          .post(
-            wellRoutes,
-            {
-              name: data.name,
+        if (file?.file) {
+          await axios
+            .post(
+              wellRoutes,
+              {
+                file: file.file,
 
-              longitude: data.longitude,
+                name: data.name,
 
-              latitude: data.latitude,
+                longitude: data.longitude,
 
-              fieldId: fieldId,
+                latitude: data.latitude,
 
-              clientId: clientId,
+                fieldId: fieldId,
 
-              treeSpecs: data.treeSpecs,
+                clientId: clientId,
 
-              status: data.status,
+                treeSpecs: data.treeSpecs,
 
-              spudDate: data.spudDate,
+                status: data.status,
 
-              firstProductionDate: data.firstProductionDate,
+                spudDate: data.spudDate,
 
-              initialCompletionDate: data.initialCompletionDate,
+                firstProductionDate: data.firstProductionDate,
 
-              bitSize: data.bitSize,
+                initialCompletionDate: data.initialCompletionDate,
 
-              casting: data.casting,
+                bitSize: data.bitSize,
 
-              totalDepth: data.totalDepth,
+                casting: data.casting,
 
-              turbingSize: data.turbingSize,
+                totalDepth: data.totalDepth,
 
-              flowStation: data.flowStation,
+                turbingSize: data.turbingSize,
 
-              wellType: data.wellType,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                flowStation: data.flowStation,
+
+                wellType: data.wellType,
               },
-            }
-          )
-          .then((_) => {
-            toast.success("Client update successfully");
-            reset();
-            location.reload()
-          })
-          .catch((err) => console.log(err.message));
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((_) => {
+              toast.success("New well created successfully");
+              reset();
+              location.reload();
+            })
+            .catch((err) => console.log(err.message));
+        } else {
+          alert("Please upload picture");
+        }
       }
     } catch (error) {
       toast.error("An error occurred, please try again");
@@ -198,7 +203,7 @@ const AddWellModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          location.reload()
+          location.reload();
         }}
       >
         <div className="space-y-6">
@@ -613,18 +618,18 @@ const AddWellModal: FC<ViewModalProps> = ({
               </div>
             </div>
 
-            <div className="mb-4">
-              <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                <div className="text-center space-y-1 text-sm font-lekton">
-                  <div className="flex flex-row items-center justify-center">
-                    <FaCloudUploadAlt className="" size={30} />
-                  </div>
-                  <div className="">Click here to upload well image</div>
+            {!isEdit && (
+              <div className="mb-4">
+                <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
+                  <div className="text-center space-y-1 text-sm font-lekton">
+                    {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
-                  <div className="">Drag Image Here</div>
+                  <div className="">Drag Logo Here</div> */}
+                    <UploadDocs name={``} setFile={setFile} file={file} />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="mb-4 w-full flex flex-row items-center justify-center mt-8">
               <Button
                 children="Submit"

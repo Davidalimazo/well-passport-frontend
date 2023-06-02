@@ -12,7 +12,7 @@ export const AdminMenu = [
     icon: <IoMdSettings />,
     text: "Settings",
     color: "",
-    link: "/home/settings",
+    link: "/home/settings/set/",
   },
   {
     id: 1,
@@ -58,7 +58,7 @@ export const sidebarActions = [
     id: 0,
     icon: <RiLockPasswordFill />,
     text: "Change Password",
-    link: "/home/settings/set/change-password",
+    link: "/home/settings/set",
   },
   {
     id: 1,

@@ -14,7 +14,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
-import { clientRoutes } from "../utils/constants/api";
+import { UPLOADS, clientRoutes } from "../utils/constants/api";
 
 export interface ClientDataProp {
   address: string;
@@ -31,6 +31,13 @@ export interface ClientDataProp {
   website: string;
   _id: string;
 }
+
+export const imageUrlChecker = (url: string | undefined) => {
+  if (url) {
+    return UPLOADS + url;
+  }
+  return placeholderImg;
+};
 
 //@ts-ignore
 
@@ -49,11 +56,15 @@ const ClientListUi = () => {
           "Content-Type": "application/json",
         },
       });
-      if (req.data.length > 0) setCachedDta(req.data);
+      if (req.data.length > 0) {
+        const resData = req.data.map((item: any) => {
+          return { ...item, image: item?.image?.split("/")[1] };
+        });
+        setCachedDta(resData);
+      }
     };
     getData();
   }, []);
-  
 
   const [currData, setCurrData] = useState<ClientDataProp | null>(null);
 
@@ -69,10 +80,10 @@ const ClientListUi = () => {
       })
       .then((_) => {
         toast.success("Client deleted succcessfully");
-        location.reload()
+        location.reload();
       })
       .catch((err) =>
-        toast.error("An error while deleting post " + err.message)
+        toast.error("An error while deleting client " + err.message)
       );
   };
 
@@ -158,7 +169,7 @@ const ClientListUi = () => {
                 >
                   <div className="flex flex-row gap-6 items-center">
                     <img
-                      src={placeholderImg}
+                      src={imageUrlChecker(image)}
                       width={130}
                       height={89}
                       alt="exxon"

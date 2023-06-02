@@ -57,12 +57,11 @@ const AddFieldModal: FC<ViewModalProps> = ({
         },
       },
     });
- 
+
   const { errors, isDirty, isValid, isSubmitting } = formState;
   const { token } = useAuth((state) => state);
-  console.log(clientData);
+
   const onSubmit = async (data: FieldsValues) => {
-    console.log(data);
     try {
       if (isEdit) {
         await axios
@@ -81,7 +80,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Client update successfully");
             reset();
-            location.reload()
+            location.reload();
           })
           .catch((err) => console.log(err.message));
       } else {
@@ -101,7 +100,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
           .then((_) => {
             toast.success("Account created successfully");
             reset();
-            location.reload()
+            location.reload();
           });
       }
     } catch (error) {
@@ -117,7 +116,7 @@ const AddFieldModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          location.reload()
+          location.reload();
         }}
       >
         <div className="space-y-6">

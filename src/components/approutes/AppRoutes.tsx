@@ -15,6 +15,11 @@ import WellProjectList from "../../pages/Project";
 import Settings from "../../pages/Settings";
 import SettingsOutlet from "../../pages/SettingsOutlet";
 import ChangePassword from "../../pages/ChangePassword";
+import ReportList from "../../pages/Report";
+import ViewReportComponent from "../../pages/ViewReport";
+import ErrorPage from "../../pages/ErrorPage";
+import Tokenized from "../../pages/Tokenized";
+import UpdateAccount from "../../pages/UpdateAccount";
 
 const AppRoutes = () => {
   const { user } = useAuth((state) => state);
@@ -25,25 +30,39 @@ const AppRoutes = () => {
         <Route path="/" element={<SplashScreen />} />
         <Route
           path="/home"
-          element={user?.email ? <Home /> : <Navigate to="/login" replace />}
+          element={
+            user?.email ? (
+              <Tokenized children={<Home />} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         >
           <Route index element={<Landing />} />
           <Route path="register" element={<Register />} />
-          <Route path="client" element={<ClientOutlet />}>
+          <Route
+            path="client"
+            element={<Tokenized children={<ClientOutlet />} />}
+          >
             <Route index element={<ClientListUi />} />
             <Route path="field" element={<ClientFieldList />} />
             <Route path="well" element={<WellFieldList />} />
             <Route path="project" element={<WellProjectList />} />
+            <Route path="report" element={<ReportList />} />
+            <Route path="report/view" element={<ViewReportComponent />} />
           </Route>
           <Route path="field" element={<FieldListUI />} />
           <Route path="settings" element={<Settings />}>
             <Route path="set" element={<SettingsOutlet />}>
-              <Route path="change-password" element={<ChangePassword />} />
+              <Route index element={<ChangePassword />} />
+              <Route path="update-account" element={<UpdateAccount />} />
+              <Route path="password" element={<ChangePassword />} />
             </Route>
             <Route path="*" element={<>No Route Here</>} />
           </Route>
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );

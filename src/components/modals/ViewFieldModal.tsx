@@ -11,6 +11,7 @@ import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import useSetField from "../../hooks/useSetField";
+import { imageUrlChecker } from "../../pages/Client";
 
 interface ViewModalProps {
   open: () => void;
@@ -48,7 +49,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
             {clientData?.image ? (
               <img
                 alt={clientData.name}
-                src={clientData.image}
+                src={imageUrlChecker(clientData.image)}
                 height={99}
                 width={99}
                 className="rounded-full"

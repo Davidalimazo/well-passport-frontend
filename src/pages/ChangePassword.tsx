@@ -59,7 +59,7 @@ const ChangePassword: FC<ChangePasswordProps> = ({}) => {
     <div className="w-full h-full">
       <div className="w-full flex flex-row items-center justify-center">
         <form
-          className="flex flex-col gap-4 pt-4 w-full sm:w-2/4 mt-24"
+          className="flex bg-white flex-col gap-4 p-8 rounded-md shadow-md w-full sm:w-2/4 mt-24"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >

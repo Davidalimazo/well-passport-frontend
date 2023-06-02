@@ -3,9 +3,7 @@ import { BiSearch } from "react-icons/bi";
 import { AiFillEye, AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { useEffect, useState } from "react";
-import placeholderImg from "../assets/images/placeholderImg.png";
 import { useDisclosure } from "@mantine/hooks";
-
 import Button from "../components/buttons/Button";
 import DeleteModal from "../components/modals/DeleteModal";
 import { toast } from "react-hot-toast";
@@ -15,6 +13,7 @@ import useAuth from "../utils/auth";
 import { fieldRoutes } from "../utils/constants/api";
 import ViewFieldModal from "../components/modals/ViewFieldModal";
 import AddFieldModal from "../components/modals/AddFieldModal";
+import { imageUrlChecker } from "./Client";
 
 export interface FieldDataProp {
   _id: string;
@@ -53,11 +52,15 @@ const FieldListUI = () => {
           "Content-Type": "application/json",
         },
       });
-      if (req.data.length > 0) setCachedDta(req.data);
+      if (req.data.length > 0) {
+        const resData = req.data.map((item: any) => {
+          return { ...item, image: item?.image?.split("/")[1] };
+        });
+        setCachedDta(resData);
+      }
     };
     getData();
   }, []);
-
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -70,11 +73,11 @@ const FieldListUI = () => {
         },
       })
       .then((_) => {
-        toast.success("Client deleted succcessfully");
-        location.reload()
+        toast.success("Field deleted succcessfully");
+        location.reload();
       })
       .catch((err) =>
-        toast.error("An error while deleting post " + err.message)
+        toast.error("An error while deleting field " + err.message)
       );
   };
 
@@ -171,7 +174,7 @@ const FieldListUI = () => {
                 >
                   <div className="flex flex-row gap-6 items-center">
                     <img
-                      src={placeholderImg}
+                      src={imageUrlChecker(image)}
                       width={130}
                       height={89}
                       alt="exxon"

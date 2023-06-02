@@ -9,8 +9,8 @@ interface Props {
 }
 
 const useSetReport = create<Props>((set) => ({
-  reportId: store.clientId,
-  reportName: store.clientName,
+  reportId: store.reportId,
+  reportName: store.reportName,
   setReport: async (id: string | undefined, name: string | undefined) => {
     set((state) => ({ ...state, reportId: id, reportName: name }));
     window.localStorage.setItem(

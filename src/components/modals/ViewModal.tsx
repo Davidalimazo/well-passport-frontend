@@ -4,7 +4,7 @@ import Button from "../buttons/Button";
 import { BsFillBuildingsFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
-import { ClientDataProp } from "../../pages/Client";
+import { ClientDataProp, imageUrlChecker } from "../../pages/Client";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import useSetClient from "../../hooks/useSetClient";
@@ -47,7 +47,7 @@ const ViewModal: FC<ViewModalProps> = ({
             {clientData?.image ? (
               <img
                 alt={clientData.name}
-                src={clientData.image}
+                src={imageUrlChecker(clientData.image)}
                 height={99}
                 width={99}
                 className="rounded-full"

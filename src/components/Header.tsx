@@ -33,7 +33,7 @@ const Header: FC<HeaderProps> = ({}) => {
         <div className="flex flex-row items-center justify-between gap-3">
           <span className="font-semibold text-lg font-lekton hidden sm:block">
             {user?.email ? (
-              `${user.firstName + " " + user.lastName}`
+              `${user?.firstName + " " + user?.lastName}`
             ) : (
               <Link
                 to="/login"

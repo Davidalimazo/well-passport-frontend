@@ -20,7 +20,7 @@ const Settings: FC<SettingsProps> = ({}) => {
       </Helmet>
       <div className="overflow-x-hidden bg-[#E7E6E6]">
         <div className="mt-8 flex flex-row gap-3 px-3 sm:px-6">
-          <div className="w-[20%] bg-white rounded-md shadow-md hidden sm:block min-h-screen">
+          <div className="w-[20%] bg-white rounded-md shadow-md hidden sm:block min-h-3/4">
             <div className="px-3 pt-6 flex flex-col gap-4">
               {sidebarActions.map(({ id, text, icon, link }) => (
                 <div
@@ -38,7 +38,7 @@ const Settings: FC<SettingsProps> = ({}) => {
               ))}
             </div>
           </div>
-          <div className="w-full sm:w-[80%] bg-[#F5F5F5] p-3 rounded-md shadow-md overflow-hidden">
+          <div className="w-full min-h-[80vh] sm:w-[80%] bg-[#F5F5F5] p-3 rounded-md shadow-md overflow-hidden">
             <SettingsOutlet />
           </div>
         </div>

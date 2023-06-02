@@ -9,8 +9,8 @@ interface Props {
 }
 
 const useSetWells = create<Props>((set) => ({
-  wellId: store.clientId,
-  wellName: store.clientName,
+  wellId: store.wellId,
+  wellName: store.wellName,
   setWell: async (id: string | undefined, name: string | undefined) => {
     set((state) => ({ ...state, wellId: id, wellName: name }));
     window.localStorage.setItem(

@@ -11,8 +11,8 @@ interface Props {
 }
 
 const useSetField = create<Props>((set) => ({
-  fieldId: store.clientId,
-  fieldName: store.clientName,
+  fieldId: store.fieldId,
+  fieldName: store.fieldName,
   setField: async (id: string | undefined, name: string | undefined) => {
     set((state) => ({ ...state, fieldId: id, fieldName: name }));
     window.localStorage.setItem(

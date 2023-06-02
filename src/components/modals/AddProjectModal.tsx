@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Input } from "@mantine/core";
 import Button from "../buttons/Button";
 import { ProjectDataProp } from "../../pages/Project";
@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import useSetClient from "../../hooks/useSetClient";
+import UploadDocs from "../UploadDoc";
 // import useSetField from "../../hooks/useSetField";
 // import useSetWells from "../../hooks/useSetWells";
 
@@ -54,6 +55,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
   const { clientId } = useSetClient((state) => state);
   const field = JSON.parse(window.localStorage.getItem("field") || "{}");
   const well = JSON.parse(window.localStorage.getItem("well") || "{}");
+  const [file, setFile] = useState<any>(null);
 
   const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
     defaultValues: {
@@ -72,7 +74,6 @@ const AddProjectModal: FC<ViewModalProps> = ({
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
-  
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -100,45 +101,51 @@ const AddProjectModal: FC<ViewModalProps> = ({
           }
         );
 
-        toast.success("Client update successfully");
+        toast.success("Project update successfully");
         reset();
-        location.reload()
+        location.reload();
       } else {
-        await axios
-          .post(
-            projectRoutes,
-            {
-              fieldId: field.fieldId,
+        if (file?.file) {
+          await axios
+            .post(
+              projectRoutes,
+              {
+                file: file.file,
 
-              clientId: clientId,
+                fieldId: field.fieldId,
 
-              name: data.name,
+                clientId: clientId,
 
-              description: data.description,
+                name: data.name,
 
-              rig: data.rig,
+                description: data.description,
 
-              startDate: data.startDate,
+                rig: data.rig,
 
-              endDate: data.endDate,
+                startDate: data.startDate,
 
-              wellId: well.wellId,
+                endDate: data.endDate,
 
-              status: data.status,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                wellId: well.wellId,
+
+                status: data.status,
               },
-            }
-          )
-          .then((_) => {
-            toast.success("Client update successfully");
-            reset();
-            location.reload()
-          })
-          .catch((err) => console.log(err.message));
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((_) => {
+              toast.success("New project update successfully");
+              reset();
+              location.reload();
+            })
+            .catch((err) => console.log(err.message));
+        } else {
+          alert("Please upload picture");
+        }
       }
     } catch (error) {
       toast.error("An error occurred, please try again");
@@ -153,7 +160,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          location.reload()
+          location.reload();
         }}
       >
         <div className="space-y-6">
@@ -352,6 +359,18 @@ const AddProjectModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
+            {!isEdit && (
+              <div className="mb-4">
+                <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
+                  <div className="text-center space-y-1 text-sm font-lekton">
+                    {/* <div className="">Click here to upload logo</div>
+                  <div className="">OR</div>
+                  <div className="">Drag Logo Here</div> */}
+                    <UploadDocs name={``} setFile={setFile} file={file} />
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="mb-4 w-full flex flex-row items-center justify-center mt-8">
               <Button
                 children="Submit"
