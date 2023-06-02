@@ -30,7 +30,7 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
           },
         })
         .then((response) => {
-          setImageUrl(response.data?.split("/")[1]);
+          setImageUrl(response.data?.split("\\")[1]);
         })
         .catch((error) => {
           setErrorMsg("Could not get user image: " + error.message);
