@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": ".",
+  "homepage": "https://well-passport-frontend-cwcsqmx63-davidalimazo.vercel.app/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
