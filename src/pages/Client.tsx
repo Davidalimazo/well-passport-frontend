@@ -14,7 +14,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
-import { UPLOADS, clientRoutes } from "../utils/constants/api";
+import { clientRoutes } from "../utils/constants/api";
 //import { clientData } from "../assets/JsonData/test_data";
 
 export interface ClientDataProp {
@@ -34,9 +34,8 @@ export interface ClientDataProp {
 }
 
 export const imageUrlChecker = (url: string | undefined) => {
-  console.log(UPLOADS + url);
   if (url) {
-    return UPLOADS + url;
+    return "https://well-passport-server-production.up.railway.app/" + url;
   }
   return placeholderImg;
 };
