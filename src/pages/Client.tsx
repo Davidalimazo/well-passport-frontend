@@ -58,12 +58,12 @@ const ClientListUi = () => {
         },
       });
       if (req.data.length > 0) {
-        console.log(req.data);
-        const resData = req.data.map((item: any) => {
-          return { ...item, image: item?.image?.split("\\")[1] };
-        });
-        console.log(resData);
-        setCachedDta(resData);
+        // console.log(req.data);
+        // const resData = req.data.map((item: any) => {
+        //   return { ...item, image: item?.image?.split("\\")[1] };
+        // });
+        // console.log(resData);
+        setCachedDta(req.data);
       }
     };
     getData();
