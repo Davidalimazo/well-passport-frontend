@@ -34,6 +34,8 @@ export interface ClientDataProp {
 }
 
 export const imageUrlChecker = (url: string | undefined) => {
+  console.log(UPLOADS, url);
+  console.log(UPLOADS + url);
   if (url) {
     return UPLOADS + url;
   }
