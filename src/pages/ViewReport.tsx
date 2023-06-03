@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 // import { ReportDataProp } from "./Report";
 import useSetReport from "../hooks/useSetReport";
 
@@ -8,6 +8,10 @@ import useSetReport from "../hooks/useSetReport";
 
 const ViewReportComponent: FC = ({}) => {
   const { reportId } = useSetReport((state) => state);
+
+  useEffect(() => {
+    //const getReport
+  }, []);
 
   return <div>{reportId && reportId}</div>;
 };

@@ -58,9 +58,10 @@ const WellProjectList = () => {
         })
         .then((res) => {
           // const resData = res.data.map((item: any) => {
-          //   return { ...item, image: item?.image?.split("/")[1] };
+          //   return { ...item, image: item?.image?.split("\\")[1] };
           // });
           setCachedDta(res.data);
+          //setCachedDta(resData);
         })
         .catch((err) => console.log(err.message));
     };
@@ -150,7 +151,7 @@ const WellProjectList = () => {
             <div className="text-center flex flex-row items-center">
               <Button
                 children="ADD NEW PROJECT"
-                className="text-[10px] sm:text-[20px] sm:text-lg h-[28px] w-3/3"
+                className="text-sm sm:text-[15px] md:text-sm lg:text-sm h-[28px] w-3/3"
                 onClick={openAddModal}
                 icon={
                   <>

@@ -11,13 +11,14 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiRoutes, reportRoutes } from "../utils/constants/api";
 import { BsArrowRight } from "react-icons/bs";
 import AddReportModal from "../components/modals/AddReportModal";
-import { IoMdDownload } from "react-icons/io";
 import GenerateReportModal from "../components/modals/GenerateReportModal";
 import useSetReport from "../hooks/useSetReport";
+import FileDownloadLink from "../utils/FileDownloadLink";
+import { imageUrlChecker } from "./Client";
 
 export interface ReportDataProp {
   _id: string;
@@ -33,6 +34,8 @@ export interface ReportDataProp {
   projectId: string;
 
   wellId: string;
+
+  image: string;
 }
 //@ts-ignore
 
@@ -44,7 +47,6 @@ const ReportList = () => {
 
   const [cachedData, setCachedDta] = useState<Array<ReportDataProp> | null>([]);
   const { setReport } = useSetReport((state) => state);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
@@ -57,8 +59,9 @@ const ReportList = () => {
         })
         .then((res) => {
           // const resData = res.data.map((item: any) => {
-          //   return { ...item, image: item?.image?.split("/")[1] };
+          //   return { ...item, image: item?.image?.split("\\")[1] };
           // });
+          //setCachedDta(res.data);
           setCachedDta(res.data);
         })
         .catch((err) => console.log(err.message));
@@ -157,7 +160,7 @@ const ReportList = () => {
             <div className="text-center flex flex-col sm:flex-row items-center gap-2">
               <Button
                 children="GENERATE REPORT"
-                className="text-[10px] sm:text-lg h-[28px] w-3/3 text-black"
+                className="text-[10px] sm:text-sm h-[28px] w-3/3 text-black"
                 onClick={openGenerateModal}
                 variant="outline_black"
                 icon={
@@ -168,7 +171,7 @@ const ReportList = () => {
               />
               <Button
                 children="ADD NEW REPORT"
-                className="text-[11px] sm:text-lg h-[28px] w-3/3"
+                className="text-[11px] sm:text-sm h-[28px] w-3/3"
                 onClick={open}
                 icon={
                   <>
@@ -181,7 +184,7 @@ const ReportList = () => {
         </div>
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
           {cachedData &&
-            cachedData.map(({ _id: id, name, author }, i) => (
+            cachedData.map(({ _id: id, name, author, image }, i) => (
               <div
                 className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
                   i === index ? "ring-2 ring-red-500" : "ring-2 ring-[#E7E6E6]"
@@ -217,12 +220,12 @@ const ReportList = () => {
                   <div className="text-lg flex flex-row gap-3">
                     {user?.role === "ADMIN" ? (
                       <>
-                        <AiFillEye
-                          onClick={() => navigate("/home/client/report/view")}
-                        />
-
-                        <IoMdDownload onClick={() => null} />
-
+                        <FileDownloadLink
+                          fileName={`${name}.pdf`}
+                          fileUrl={imageUrlChecker(image)}
+                        >
+                          <AiFillEye />
+                        </FileDownloadLink>
                         <MdDeleteForever
                           onClick={() => {
                             openDeleteModal();

@@ -170,6 +170,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="pt-8 px-2 sm:px-6 md:px-6 lg:px-6"
+            autoComplete="off"
           >
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">

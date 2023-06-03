@@ -62,6 +62,7 @@ const ChangePassword: FC<ChangePasswordProps> = ({}) => {
           className="flex bg-white flex-col gap-4 p-8 rounded-md shadow-md w-full sm:w-2/4 mt-24"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
+          autoComplete="off"
         >
           <div className="text-center font-jarkata font-bold">
             CHANGE PASSWORD

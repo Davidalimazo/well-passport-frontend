@@ -36,7 +36,7 @@ const Login = ({}: loginProps) => {
     let { email, password } = data;
 
     let req = await axios.post(apiRoutes.login, {
-      email,
+      email: email.toLowerCase(),
       password,
     });
 
