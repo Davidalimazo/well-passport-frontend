@@ -24,7 +24,7 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
   useEffect(() => {
     const getData = async () => {
       await axios
-        .get(authRoutes + `/6474eb7b39f2211de8ff353a`, {
+        .get(authRoutes + `/${user?._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -32,8 +32,8 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
         .then((response) => {
           setImageUrl(response.data.image.split("/")[1]);
         })
-        .catch((error) => {
-          setErrorMsg("Could not get user image: " + error.message);
+        .catch((_) => {
+          setErrorMsg("Could not get user image");
           setError(true);
           open();
         });

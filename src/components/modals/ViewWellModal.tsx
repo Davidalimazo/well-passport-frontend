@@ -165,17 +165,8 @@ const ViewWellModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="flex flex-row items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
               <div className="space-y-4">
-                <div className="flex flex-row items-center gap-3">
-                  <BiTestTube className="text-gray-500" />
-                  <span className="text-gray-400">Turbing Size</span>
-                </div>
-                <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.turbingSize}
-                </div>
-              </div>
-              <div className="space-y-4 w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <BsEvStationFill className="text-gray-500" />
                   <span className="text-gray-400">Flow station</span>
@@ -184,8 +175,17 @@ const ViewWellModal: FC<ViewModalProps> = ({
                   {clientData?.flowStation}
                 </div>
               </div>
+              <div className="space-y-4 w-full sm:w-2/5">
+                <div className="flex flex-row items-center gap-3">
+                  <BiTestTube className="text-gray-500" />
+                  <span className="text-gray-400">Turbing Size</span>
+                </div>
+                <div className="text-lg font-lekton font-bold pl-8">
+                  {clientData?.turbingSize}
+                </div>
+              </div>
             </div>
-            <div className="flex flex-row items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <MdDateRange className="text-gray-500" />
@@ -200,7 +200,7 @@ const ViewWellModal: FC<ViewModalProps> = ({
                     : ""}
                 </div>
               </div>
-              <div className="space-y-4 w-2/5">
+              <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <MdDateRange className="text-gray-500" />
                   <span className="text-gray-400">Initial Completion Date</span>

@@ -82,7 +82,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
             />
           </div>
           <div className="pt-8 px-6">
-            <div className="flex flex-row items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center  justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <GiField className="text-gray-500" />
@@ -92,7 +92,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   {clientData?.name}
                 </div>
               </div>
-              <div className="space-y-4 w-2/5">
+              <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <GiHobbitDwelling className="text-gray-500" />
                   <span className="text-gray-400">Number of wells</span>
@@ -102,7 +102,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="flex flex-row items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <TbWorldLongitude className="text-gray-500" />
@@ -112,7 +112,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   {clientData?.longitude}
                 </div>
               </div>
-              <div className="space-y-4 w-2/5">
+              <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <TbWorldLongitude className="text-gray-500" />
                   <span className="text-gray-400">Latitude</span>
@@ -125,7 +125,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
             <div className="my-4 text-gray-400 gap-2 flex flex-row">
               <FaUser /> <span>Superintendent</span>
             </div>
-            <div className="flex flex-row items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <FaUser className="text-gray-500" />
@@ -135,7 +135,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   {clientData?.superintendent.name}
                 </div>
               </div>
-              <div className="space-y-4 w-2/5">
+              <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <IoCall className="text-gray-500" />
                   <span className="text-gray-400">Mobile</span>

@@ -217,6 +217,10 @@ const AddClientModal: FC<ViewModalProps> = ({
                           value: isEdit ? false : true,
                           message: "mobile is required",
                         },
+                        pattern: {
+                          value: /(\+234)?(\d{3})(\d{3})(\d{4})(\d{1})?/g,
+                          message: "invalid phone number",
+                        },
                       })}
                       error={
                         errors.mobile?.message &&
