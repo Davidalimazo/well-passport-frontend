@@ -15,7 +15,7 @@ import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
 import { Link } from "react-router-dom";
 import { UPLOADS, clientRoutes } from "../utils/constants/api";
-import { clientData } from "../assets/JsonData/test_data";
+//import { clientData } from "../assets/JsonData/test_data";
 
 export interface ClientDataProp {
   address: string;
