@@ -30,7 +30,6 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
           },
         })
         .then((response) => {
-          //setImageUrl(response.data.image.split("\\")[1]);
           setImageUrl(response.data.image);
         })
         .catch((_) => {

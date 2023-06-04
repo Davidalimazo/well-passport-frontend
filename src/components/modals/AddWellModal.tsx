@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Modal, Input } from "@mantine/core";
+import { Modal, Input, Select } from "@mantine/core";
 import Button from "../buttons/Button";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { TbWorldLongitude } from "react-icons/tb";
@@ -17,6 +17,8 @@ import { wellRoutes } from "../../utils/constants/api";
 import useSetField from "../../hooks/useSetField";
 import useSetClient from "../../hooks/useSetClient";
 import UploadDocs from "../UploadDoc";
+import { DatePickerInput } from "@mantine/dates";
+import { AiOutlineCalendar } from "react-icons/ai";
 
 interface ViewModalProps {
   open: () => void;
@@ -32,13 +34,8 @@ interface FieldsValues {
   clientId: string;
   name: string;
   treeSpecs: number;
-  wellType: string;
   longitude: number;
   latitude: number;
-  status: string;
-  spudDate: string;
-  firstProductionDate: string;
-  initialCompletionDate: string;
   bitSize: number;
   casting: number;
   totalDepth: number;
@@ -57,6 +54,8 @@ const AddWellModal: FC<ViewModalProps> = ({
   const { fieldId } = useSetField((state) => state);
   const { token } = useAuth((state) => state);
   const [file, setFile] = useState<any>(null);
+  const [wellType, setWellType] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
 
   const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
     defaultValues: {
@@ -64,13 +63,8 @@ const AddWellModal: FC<ViewModalProps> = ({
       clientId: clientId,
       name: isEdit ? clientData?.name : "",
       treeSpecs: isEdit ? clientData?.treeSpecs : 0,
-      wellType: isEdit ? clientData?.wellType : "",
       longitude: isEdit ? clientData?.longitude : 0,
       latitude: isEdit ? clientData?.latitude : 0,
-      status: isEdit ? clientData?.status : "",
-      spudDate: isEdit ? clientData?.spudDate : "",
-      firstProductionDate: isEdit ? clientData?.firstProductionDate : "",
-      initialCompletionDate: isEdit ? clientData?.initialCompletionDate : "",
       bitSize: isEdit ? clientData?.bitSize : 0,
       casting: isEdit ? clientData?.casting : 0,
       totalDepth: isEdit ? clientData?.totalDepth : 0,
@@ -80,6 +74,20 @@ const AddWellModal: FC<ViewModalProps> = ({
   });
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
+
+  const [spudDate, setSpudDate] = useState<Date | null>(
+    isEdit && clientData?.spudDate ? new Date(clientData.spudDate) : null
+  );
+  const [firstComDate, setFirstComDate] = useState<Date | null>(
+    isEdit && clientData?.firstProductionDate
+      ? new Date(clientData.firstProductionDate)
+      : null
+  );
+  const [initialComDate, setInitialComDate] = useState<Date | null>(
+    isEdit && clientData?.initialCompletionDate
+      ? new Date(clientData.initialCompletionDate)
+      : null
+  );
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -100,13 +108,17 @@ const AddWellModal: FC<ViewModalProps> = ({
 
               treeSpecs: data.treeSpecs,
 
-              status: data.status,
+              status: status,
 
-              spudDate: data.spudDate,
+              spudDate: spudDate ? spudDate : clientData?.spudDate,
 
-              firstProductionDate: data.firstProductionDate,
+              firstProductionDate: firstComDate
+                ? firstComDate
+                : clientData?.firstProductionDate,
 
-              initialCompletionDate: data.initialCompletionDate,
+              initialCompletionDate: initialComDate
+                ? initialComDate
+                : clientData?.initialCompletionDate,
 
               bitSize: data.bitSize,
 
@@ -118,7 +130,7 @@ const AddWellModal: FC<ViewModalProps> = ({
 
               flowStation: data.flowStation,
 
-              wellType: data.wellType,
+              wellType: wellType,
             },
             {
               headers: {
@@ -153,13 +165,13 @@ const AddWellModal: FC<ViewModalProps> = ({
 
                 treeSpecs: data.treeSpecs,
 
-                status: data.status,
+                status: status,
 
-                spudDate: data.spudDate,
+                spudDate: spudDate,
 
-                firstProductionDate: data.firstProductionDate,
+                firstProductionDate: firstComDate,
 
-                initialCompletionDate: data.initialCompletionDate,
+                initialCompletionDate: initialComDate,
 
                 bitSize: data.bitSize,
 
@@ -171,7 +183,7 @@ const AddWellModal: FC<ViewModalProps> = ({
 
                 flowStation: data.flowStation,
 
-                wellType: data.wellType,
+                wellType: wellType,
               },
               {
                 headers: {
@@ -226,6 +238,7 @@ const AddWellModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="MLQ2"
                       defaultValue={isEdit ? clientData?.name : ""}
                       {...register("name", {
                         required: {
@@ -246,23 +259,14 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Well Type</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="wellType" error={errors.wellType?.message}>
-                    <Input
-                      radius="lg"
-                      size="md"
-                      defaultValue={isEdit ? String(clientData?.wellType) : ""}
-                      {...register("wellType", {
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "wellType is required",
-                        },
-                      })}
-                      error={
-                        errors.wellType?.message &&
-                        errors.wellType.message.length > 0
-                      }
-                    />
-                  </Input.Wrapper>
+                  <Select
+                    radius="lg"
+                    size="md"
+                    defaultValue={isEdit ? String(clientData?.wellType) : ""}
+                    value={wellType}
+                    onChange={setWellType}
+                    data={["Natural gas", "Crude Oil", "Bitumen"]}
+                  />
                 </div>
               </div>
             </div>
@@ -412,28 +416,19 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <MdDateRange className="text-gray-500" />
                   <span className="text-gray-400">First Production Date</span>
                 </div>
-                <div className="text-lg font-lekton font-bold underline">
-                  <Input.Wrapper
-                    id="firstProductionDate"
-                    error={errors.firstProductionDate?.message}
-                  >
-                    <Input
+                <div className="text-lg font-lekton font-bold">
+                  <Input.Wrapper>
+                    <DatePickerInput
+                      valueFormat="YYYY MMM DD"
                       radius="lg"
                       size="md"
-                      defaultValue={
-                        isEdit ? clientData?.firstProductionDate : ""
+                      defaultDate={
+                        new Date(clientData?.firstProductionDate as string)
                       }
-                      {...register("firstProductionDate", {
-                        valueAsDate: true,
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "firstProductionDate is required",
-                        },
-                      })}
-                      error={
-                        errors.firstProductionDate?.message &&
-                        errors.firstProductionDate.message.length > 0
-                      }
+                      value={firstComDate}
+                      onChange={setFirstComDate}
+                      error={!firstComDate ? true : false}
+                      icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
                 </div>
@@ -446,23 +441,14 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Current Status</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="status" error={errors.status?.message}>
-                    <Input
-                      radius="lg"
-                      size="md"
-                      defaultValue={isEdit ? clientData?.status : ""}
-                      {...register("status", {
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "status is required",
-                        },
-                      })}
-                      error={
-                        errors.status?.message &&
-                        errors.status.message.length > 0
-                      }
-                    />
-                  </Input.Wrapper>
+                  <Select
+                    radius="lg"
+                    size="md"
+                    data={["DRIED", "DRILLING", "EXPLORING"]}
+                    defaultValue={isEdit ? clientData?.status : ""}
+                    value={status}
+                    onChange={setStatus}
+                  />
                 </div>
               </div>
               <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
@@ -470,7 +456,7 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <BiTestTube className="text-gray-500" />
                   <span className="text-gray-400">Total Depth</span>
                 </div>
-                <div className="text-lg font-lekton font-bold underline">
+                <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper
                     id="totalDepth"
                     error={errors.totalDepth?.message}
@@ -499,7 +485,7 @@ const AddWellModal: FC<ViewModalProps> = ({
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <BiTestTube className="text-gray-500" />
-                  <span className="text-gray-400">Turbing Size</span>
+                  <span className="text-gray-400">Tubing Size</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper
@@ -532,7 +518,7 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <BsEvStationFill className="text-gray-500" />
                   <span className="text-gray-400">Flow Station</span>
                 </div>
-                <div className="text-lg font-lekton font-bold underline">
+                <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper
                     id="flowStation"
                     error={errors.flowStation?.message}
@@ -540,6 +526,7 @@ const AddWellModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="Asaba Depot"
                       defaultValue={isEdit ? clientData?.flowStation : ""}
                       {...register("flowStation", {
                         required: {
@@ -563,25 +550,17 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Spud Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper
-                    id="spudDate"
-                    error={errors.flowStation?.message}
-                  >
-                    <Input
+                  <Input.Wrapper id="spudDate">
+                    <DatePickerInput
                       radius="lg"
-                      size="md"
-                      defaultValue={isEdit ? String(clientData?.spudDate) : ""}
-                      {...register("spudDate", {
-                        valueAsDate: true,
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "spudDate is required",
-                        },
-                      })}
-                      error={
-                        errors.spudDate?.message &&
-                        errors.spudDate.message.length > 0
-                      }
+                      valueFormat="YYYY MMM DD"
+                      size="lg"
+                      defaultDate={new Date(clientData?.spudDate as string)}
+                      value={spudDate}
+                      onChange={setSpudDate}
+                      error={!spudDate ? true : false}
+                      className="w-full"
+                      icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
                 </div>
@@ -591,28 +570,19 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <MdDateRange className="text-gray-500" />
                   <span className="text-gray-400">Initial Completion Date</span>
                 </div>
-                <div className="text-lg font-lekton font-bold underline">
-                  <Input.Wrapper
-                    id="initialCompletionDate"
-                    error={errors.initialCompletionDate?.message}
-                  >
-                    <Input
+                <div className="text-lg font-lekton font-bold">
+                  <Input.Wrapper id="initialCompletionDate">
+                    <DatePickerInput
                       radius="lg"
+                      valueFormat="YYYY MMM DD"
                       size="md"
-                      defaultValue={
-                        isEdit ? clientData?.initialCompletionDate : ""
+                      defaultDate={
+                        new Date(clientData?.initialCompletionDate as string)
                       }
-                      {...register("initialCompletionDate", {
-                        valueAsDate: true,
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "initialCompletionDate is required",
-                        },
-                      })}
-                      error={
-                        errors.initialCompletionDate?.message &&
-                        errors.initialCompletionDate.message.length > 0
-                      }
+                      value={initialComDate}
+                      onChange={setInitialComDate}
+                      error={!initialComDate ? true : false}
+                      icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
                 </div>
@@ -622,7 +592,7 @@ const AddWellModal: FC<ViewModalProps> = ({
             {!isEdit && (
               <div className="mb-4">
                 <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                  <div className="text-center space-y-1 text-sm font-lekton">
+                  <div className="text-center space-y-1 text-sm font-lekton cursor-pointer">
                     {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
                   <div className="">Drag Logo Here</div> */}

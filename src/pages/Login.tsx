@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import userImg from "../assets/images/user.png";
 import { PasswordInput } from "@mantine/core";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorModal from "../components/modals/ErrorModal";
 import { useDisclosure } from "@mantine/hooks";
 import useAuth from "../utils/auth";
+import Header from "../components/Header";
 
 interface FieldsValues {
   email: string;
@@ -23,7 +24,7 @@ interface loginProps {}
 
 const Login = ({}: loginProps) => {
   const navigate = useNavigate();
-  const { setUser } = useAuth((state) => state);
+  const { setUser, user } = useAuth((state) => state);
 
   const { register, handleSubmit, formState, setError, clearErrors } =
     useForm<FieldsValues>();
@@ -51,6 +52,11 @@ const Login = ({}: loginProps) => {
       open();
     }
   };
+  useEffect(() => {
+    if (user?.exp && user.exp * 1000 > Date.now()) {
+      navigate("/home", { replace: true });
+    }
+  }, []);
 
   return (
     <>
@@ -62,6 +68,7 @@ const Login = ({}: loginProps) => {
           key="metadescription"
         />
       </Helmet>
+      <Header />
       <div className="flex flex-row justify-center px-5 lg:px-10 items-center  mt-24 sm:mt-14">
         <div className="flex space-y-2 flex-col items-center px-4 py-4 lg:px-12 lg:py-12 shadow-lg border shadow-grey-500/50 bg-white rounded-lg">
           <img src={userImg} alt="user image" />

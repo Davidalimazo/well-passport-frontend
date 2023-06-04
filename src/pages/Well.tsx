@@ -64,11 +64,7 @@ const WellFieldList = () => {
           },
         })
         .then((res) => {
-          // const resData = res.data.map((item: any) => {
-          //   return { ...item, image: item?.image?.split("\\")[1] };
-          // });
           setCachedDta(res.data);
-          //setCachedDta(resData);
         })
         .catch((err) => console.log(err.message));
     };

@@ -41,18 +41,17 @@ const AddClientModal: FC<ViewModalProps> = ({
   isEdit,
   clientData,
 }) => {
-  const { register, handleSubmit, formState, setError, clearErrors, reset } =
-    useForm<FieldsValues>({
-      defaultValues: {
-        address: clientData?.address,
-        contactPerson: clientData?.contactPerson,
-        email: clientData?.email,
-        mobile: clientData?.mobile,
-        name: clientData?.name,
-        website: clientData?.website,
-        ownerId: clientData?.ownerId,
-      },
-    });
+  const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
+    defaultValues: {
+      address: clientData?.address,
+      contactPerson: clientData?.contactPerson,
+      email: clientData?.email,
+      mobile: clientData?.mobile,
+      name: clientData?.name,
+      website: clientData?.website,
+      ownerId: clientData?.ownerId,
+    },
+  });
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
@@ -157,6 +156,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="AITEO OIL"
                       defaultValue={isEdit ? clientData?.name : ""}
                       {...register("name", {
                         required: {
@@ -184,6 +184,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="wale adelaja"
                       defaultValue={isEdit ? clientData?.contactPerson : ""}
                       {...register("contactPerson", {
                         required: {
@@ -211,6 +212,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="09022697007"
                       defaultValue={isEdit ? clientData?.mobile : ""}
                       {...register("mobile", {
                         required: {
@@ -240,6 +242,8 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      type="url"
+                      placeholder="www.aiteo.com"
                       defaultValue={isEdit ? clientData?.website : ""}
                       {...register("website", {
                         required: {
@@ -267,24 +271,9 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      defaultValue={isEdit ? clientData?.address : ""}
+                      placeholder="info@aiteo.com"
+                      defaultValue={isEdit ? clientData?.email : ""}
                       {...register("email", {
-                        onBlur: (e) => {
-                          if (
-                            !e.target.value ||
-                            !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-                              e.target.value
-                            )
-                          ) {
-                            !isEdit &&
-                              setError("email", {
-                                type: "pattern",
-                                message: "invalid email format",
-                              });
-                          } else {
-                            clearErrors("email");
-                          }
-                        },
                         required: {
                           value: isEdit ? false : true,
                           message: "email is required",
@@ -313,6 +302,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="6475923bfc64c4c21bfdee81"
                       defaultValue={isEdit ? clientData?.ownerId : ""}
                       {...register("ownerId", {
                         disabled: isEdit ? true : false,
@@ -342,6 +332,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="xl"
+                      placeholder="23, admiralty way, lekki, lagos"
                       defaultValue={isEdit ? clientData?.address : ""}
                       {...register("address", {
                         required: {
@@ -361,7 +352,7 @@ const AddClientModal: FC<ViewModalProps> = ({
             {!isEdit && (
               <div className="mb-4">
                 <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                  <div className="text-center space-y-1 text-sm font-lekton">
+                  <div className="text-center space-y-1 text-sm font-lekton cursor-pointer">
                     {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
                   <div className="">Drag Logo Here</div> */}

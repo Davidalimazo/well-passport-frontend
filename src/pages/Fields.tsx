@@ -53,11 +53,7 @@ const FieldListUI = () => {
         },
       });
       if (req.data.length > 0) {
-        // const resData = req.data.map((item: any) => {
-        //   return { ...item, image: item?.image?.split("\\")[1] };
-        // });
         setCachedDta(req.data);
-        //setCachedDta(resData);
       }
     };
     getData();

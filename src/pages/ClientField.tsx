@@ -57,10 +57,6 @@ const ClientFieldList = () => {
           },
         })
         .then((res) => {
-          // const resData = res.data.map((item: any) => {
-          //   return { ...item, image: item?.image?.split("\\")[1] };
-          // });
-          //setCachedDta(resData);
           setCachedDta(res.data);
         })
         .catch((err) => console.log(err.message));

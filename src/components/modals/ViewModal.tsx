@@ -1,13 +1,15 @@
 import { FC } from "react";
 import { Modal, Avatar } from "@mantine/core";
 import Button from "../buttons/Button";
-import { BsFillBuildingsFill } from "react-icons/bs";
+import { BsCalendarEvent, BsFillBuildingsFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
+import { IoCall, IoLocationSharp } from "react-icons/io5";
 import { ClientDataProp, imageUrlChecker } from "../../pages/Client";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import useSetClient from "../../hooks/useSetClient";
+import { TbWorldLongitude } from "react-icons/tb";
+import { MdEmail } from "react-icons/md";
 
 interface ViewModalProps {
   open: () => void;
@@ -117,7 +119,7 @@ const ViewModal: FC<ViewModalProps> = ({
               </div>
               <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
+                  <TbWorldLongitude className="text-gray-500" />
                   <span className="text-gray-400">Website</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8 underline">
@@ -129,7 +131,7 @@ const ViewModal: FC<ViewModalProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
+                  <MdEmail className="text-gray-500" />
                   <span className="text-gray-400">Email</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
@@ -138,7 +140,7 @@ const ViewModal: FC<ViewModalProps> = ({
               </div>
               <div className="space-y-4 w-full sm:w-2/5">
                 <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
+                  <BsCalendarEvent className="text-gray-500" />
                   <span className="text-gray-400">Created Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
@@ -149,7 +151,7 @@ const ViewModal: FC<ViewModalProps> = ({
             <div className="flex flex-row items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
+                  <IoLocationSharp className="text-gray-500" />
                   <span className="text-gray-400">Address</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">

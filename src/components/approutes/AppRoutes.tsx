@@ -1,8 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "../../pages/Login";
-import useAuth from "../../utils/auth";
-import { Navigate } from "react-router-dom";
-import Home from "../../pages/Home";
 import Register from "../../pages/Register";
 import SplashScreen from "../SplashScreen";
 import Landing from "../../pages/Landing";
@@ -16,40 +13,26 @@ import Settings from "../../pages/Settings";
 import SettingsOutlet from "../../pages/SettingsOutlet";
 import ChangePassword from "../../pages/ChangePassword";
 import ReportList from "../../pages/Report";
-import ViewReportComponent from "../../pages/ViewReport";
 import ErrorPage from "../../pages/ErrorPage";
 import Tokenized from "../../pages/Tokenized";
 import UpdateAccount from "../../pages/UpdateAccount";
+import TextEditor from "../../utils/TextEditor";
 
 const AppRoutes = () => {
-  const { user } = useAuth((state) => state);
-
   return (
     <>
       <Routes>
         <Route path="/" element={<SplashScreen />} />
-        <Route
-          path="/home"
-          element={
-            user?.email ? (
-              <Tokenized children={<Home />} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        >
+        <Route path="/home" element={<Tokenized />}>
           <Route index element={<Landing />} />
           <Route path="register" element={<Register />} />
-          <Route
-            path="client"
-            element={<Tokenized children={<ClientOutlet />} />}
-          >
+          <Route path="client" element={<ClientOutlet />}>
             <Route index element={<ClientListUi />} />
             <Route path="field" element={<ClientFieldList />} />
             <Route path="well" element={<WellFieldList />} />
             <Route path="project" element={<WellProjectList />} />
             <Route path="report" element={<ReportList />} />
-            <Route path="report/view" element={<ViewReportComponent />} />
+            <Route path="report/view" element={<TextEditor />} />
           </Route>
           <Route path="field" element={<FieldListUI />} />
           <Route path="settings" element={<Settings />}>

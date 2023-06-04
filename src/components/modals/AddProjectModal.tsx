@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Modal, Input } from "@mantine/core";
+import { Modal, Input, Select } from "@mantine/core";
 import Button from "../buttons/Button";
 import { ProjectDataProp } from "../../pages/Project";
 import { HiDocumentText } from "react-icons/hi";
@@ -41,8 +41,6 @@ interface FieldsValues {
   endDate: string;
 
   wellId: string;
-
-  status: string;
 }
 
 const AddProjectModal: FC<ViewModalProps> = ({
@@ -57,23 +55,24 @@ const AddProjectModal: FC<ViewModalProps> = ({
   const well = JSON.parse(window.localStorage.getItem("well") || "{}");
   const [file, setFile] = useState<any>(null);
 
-  const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
-    defaultValues: {
-      endDate: isEdit ? clientData?.endDate : "",
-      startDate: isEdit ? clientData?.startDate : "",
-      description: isEdit ? clientData?.description : "",
-      name: isEdit ? clientData?.name : "",
-      status: isEdit ? clientData?.status : "",
-      rig: isEdit ? clientData?.rig : "",
-      clientId,
-      fieldId: field.fieldId,
-      wellId: well.wellId,
-    },
-  });
+  const { register, handleSubmit, formState, reset, clearErrors, setError } =
+    useForm<FieldsValues>({
+      defaultValues: {
+        endDate: isEdit ? clientData?.endDate : "",
+        startDate: isEdit ? clientData?.startDate : "",
+        description: isEdit ? clientData?.description : "",
+        name: isEdit ? clientData?.name : "",
+        rig: isEdit ? clientData?.rig : "",
+        clientId,
+        fieldId: field.fieldId,
+        wellId: well.wellId,
+      },
+    });
 
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
+  const [status, setStatus] = useState<string | null>(null);
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -91,7 +90,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
 
             endDate: data.endDate,
 
-            status: data.status,
+            status: status ? status : clientData?.status,
           },
           {
             headers: {
@@ -128,7 +127,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
 
                 wellId: well.wellId,
 
-                status: data.status,
+                status: status,
               },
               {
                 headers: {
@@ -183,6 +182,7 @@ const AddProjectModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="asaba excavation"
                       defaultValue={isEdit ? clientData?.name : ""}
                       {...register("name", {
                         required: {
@@ -235,7 +235,8 @@ const AddProjectModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? clientData?.rig : ""}
+                      placeholder="BLPC76"
+                      defaultValue={isEdit ? clientData?.rig : ""}
                       {...register("rig", {
                         required: {
                           value: isEdit ? false : true,
@@ -249,29 +250,20 @@ const AddProjectModal: FC<ViewModalProps> = ({
                   </Input.Wrapper>
                 </div>
               </div>
-              <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0">
-                <div className="flex flex-row items-center gap-3 w-full">
+              <div className="space-y-4 mt-4 sm:mt-0 md:mt-0 lg:mt-0 sm:ml-5">
+                <div className="flex flex-row items-center gap-3 w-full sm:ml-6">
                   <GrStatusUnknown className="text-gray-500" />
                   <span className="text-gray-400">Status</span>
                 </div>
-                <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="status" error={errors.status?.message}>
-                    <Input
-                      radius="lg"
-                      size="md"
-                      placeholder={isEdit ? clientData?.status : ""}
-                      {...register("status", {
-                        required: {
-                          value: isEdit ? false : true,
-                          message: "status Id is required",
-                        },
-                      })}
-                      error={
-                        errors.status?.message &&
-                        errors.status.message.length > 0
-                      }
-                    />
-                  </Input.Wrapper>
+                <div className="text-lg font-lekton font-bold sm:ml-6">
+                  <Select
+                    radius="lg"
+                    size="md"
+                    placeholder={isEdit ? clientData?.status : ""}
+                    onChange={setStatus}
+                    value={status}
+                    data={["IN PROGRESS", "COMPLETED", "PROPOSAL", "PAUSED"]}
+                  />
                 </div>
               </div>
             </div>
@@ -289,11 +281,30 @@ const AddProjectModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? clientData?.startDate : ""}
+                      placeholder="2022-05-02"
+                      defaultValue={isEdit ? clientData?.startDate : ""}
                       {...register("startDate", {
+                        onBlur: (e) => {
+                          if (
+                            !e.target.value ||
+                            !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
+                          ) {
+                            !isEdit &&
+                              setError("startDate", {
+                                type: "pattern",
+                                message: "date must be in yyyy-mm-dd format",
+                              });
+                          } else {
+                            clearErrors("startDate");
+                          }
+                        },
                         required: {
                           value: isEdit ? false : true,
                           message: "startDate is required",
+                        },
+                        pattern: {
+                          value: /^\d{4}-\d{1,2}-\d{1,2}/,
+                          message: "date must be in yyyy-mm-dd format",
                         },
                       })}
                       error={
@@ -314,11 +325,30 @@ const AddProjectModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? clientData?.endDate : ""}
+                      placeholder="2022-05-02"
+                      defaultValue={isEdit ? clientData?.endDate : ""}
                       {...register("endDate", {
+                        onBlur: (e) => {
+                          if (
+                            !e.target.value ||
+                            !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
+                          ) {
+                            !isEdit &&
+                              setError("endDate", {
+                                type: "pattern",
+                                message: "date must be in yyyy-mm-dd format",
+                              });
+                          } else {
+                            clearErrors("endDate");
+                          }
+                        },
                         required: {
                           value: isEdit ? false : true,
                           message: "endDate is required",
+                        },
+                        pattern: {
+                          value: /^\d{4}-\d{1,2}-\d{1,2}/,
+                          message: "date must be in yyyy-mm-dd format",
                         },
                       })}
                       error={

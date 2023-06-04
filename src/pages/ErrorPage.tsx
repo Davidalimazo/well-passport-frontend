@@ -10,7 +10,7 @@ const ErrorPage: FC<ErrorPageProps> = ({}) => {
   return (
     <div className="flex flex-col sm:flex-row">
       <div className="w-full h-screen sm:w-[50vw] sm:h-[100vh] bg-red-500">
-        <div className="grid place-content-center mt-10 sm:mt-[50%]">
+        <div className="grid place-content-center mt-10 sm:mt-[30%]">
           <div className="text-[140px] text-white font-lekton font-bold text-center">
             404
           </div>
@@ -25,7 +25,7 @@ const ErrorPage: FC<ErrorPageProps> = ({}) => {
         </div>
       </div>
       <div className="hidden sm:block w-[50vw] h-[100vh] bg-red-400">
-        <div className="grid place-content-center mt-[50%]">
+        <div className="grid place-content-center mt-[33%]">
           <div className="text-[140px] text-white font-lekton font-bold text-center">
             <img
               className="hover:animate-bounce ease-in-out 5s"

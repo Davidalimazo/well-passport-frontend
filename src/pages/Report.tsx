@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import useAuth from "../utils/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiRoutes, reportRoutes } from "../utils/constants/api";
 import { BsArrowRight } from "react-icons/bs";
 import AddReportModal from "../components/modals/AddReportModal";
@@ -44,6 +44,7 @@ const ReportList = () => {
   const [reportId, setReportId] = useState("");
   const { token, user } = useAuth((state) => state);
   const yu = JSON.parse(window.localStorage.getItem("project") || "{}");
+  const navigate = useNavigate();
 
   const [cachedData, setCachedDta] = useState<Array<ReportDataProp> | null>([]);
   const { setReport } = useSetReport((state) => state);
@@ -58,10 +59,6 @@ const ReportList = () => {
           },
         })
         .then((res) => {
-          // const resData = res.data.map((item: any) => {
-          //   return { ...item, image: item?.image?.split("\\")[1] };
-          // });
-          //setCachedDta(res.data);
           setCachedDta(res.data);
         })
         .catch((err) => console.log(err.message));
@@ -161,7 +158,7 @@ const ReportList = () => {
               <Button
                 children="GENERATE REPORT"
                 className="text-[10px] sm:text-sm h-[28px] w-3/3 text-black"
-                onClick={openGenerateModal}
+                onClick={() => navigate("/home/client/report/view")}
                 variant="outline_black"
                 icon={
                   <>

@@ -137,7 +137,7 @@ const AddReportModal: FC<ViewModalProps> = ({ opened, close }) => {
             </div>
             <div className="mb-4">
               <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                <div className="text-center space-y-1 text-sm font-lekton">
+                <div className="text-center space-y-1 text-sm font-lekton cursor-pointer">
                   {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
                   <div className="">Drag Logo Here</div> */}

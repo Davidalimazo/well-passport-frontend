@@ -1,28 +1,30 @@
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC } from "react";
 import useAuth from "../utils/auth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import Header from "../components/Header";
 
-interface TokenizedProps {
-  children: ReactNode;
-}
+export const checkAuth = (
+  expire: number | undefined,
+  cb: Function
+): boolean => {
+  if (expire && expire * 1000 > Date.now()) return true;
+  else {
+    cb();
+    return false;
+  }
+};
 
-const Tokenized: FC<TokenizedProps> = ({ children }) => {
-  const [isTokenExpired, setIsTokenExpired] = useState(false);
+const Tokenized: FC = () => {
   const { logOut, user } = useAuth((state) => state);
-  useEffect(() => {
-    // const token = JSON.parse(window.localStorage.getItem("user") || "{}");
-    if (user?.email) {
-      const expirationTime = (user?.exp || 1) * 1000; // Convert expiration time to milliseconds
-      setIsTokenExpired(expirationTime < Date.now());
-    }
-    if (isTokenExpired) clearToken;
-  }, [user?.email]);
 
-  const clearToken = () => {
-    logOut();
-    location.reload();
-  };
-  return isTokenExpired ? <Navigate to="/login" /> : <>{children}</>;
+  return checkAuth(user?.exp, logOut) ? (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 export default Tokenized;

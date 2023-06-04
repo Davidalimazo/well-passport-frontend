@@ -169,6 +169,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="Ogara Field"
                       defaultValue={isEdit ? clientData?.name : ""}
                       {...register("name", {
                         required: {
@@ -196,6 +197,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="4"
                       defaultValue={
                         isEdit ? String(clientData?.numberOfWells) : "0"
                       }
@@ -229,6 +231,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder=""
                       defaultValue={
                         isEdit ? String(clientData?.longitude) : "0"
                       }
@@ -291,6 +294,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="Ahmed Sanusi"
                       defaultValue={
                         isEdit ? clientData?.superintendent.name : ""
                       }
@@ -313,7 +317,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                   <IoCall className="text-gray-500" />
                   <span className="text-gray-400">Mobile Number</span>
                 </div>
-                <div className="text-lg font-lekton font-bold underline">
+                <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper
                     id="superintendent.mobileNo"
                     error={errors.superintendent?.mobileNo?.message}
@@ -321,6 +325,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="09022697007"
                       defaultValue={
                         isEdit ? clientData?.superintendent.mobileNo : ""
                       }
@@ -328,6 +333,10 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                         required: {
                           value: isEdit ? false : true,
                           message: "name is required",
+                        },
+                        pattern: {
+                          value: /(\+234)?(\d{3})(\d{3})(\d{4})(\d{1})?/g,
+                          message: "invalid phone number",
                         },
                       })}
                       error={
@@ -353,6 +362,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
+                      placeholder="ahmedsan@aiteo.com"
                       defaultValue={
                         isEdit ? clientData?.superintendent.email : ""
                       }
@@ -422,7 +432,7 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
             {!isEdit && (
               <div className="mb-4">
                 <div className="space-y-4 bg-[#F0F0F0] h-[151px] w-full flex flex-row items-center justify-center">
-                  <div className="text-center space-y-1 text-sm font-lekton">
+                  <div className="text-center space-y-1 text-sm font-lekton cursor-pointer">
                     {/* <div className="">Click here to upload logo</div>
                   <div className="">OR</div>
                   <div className="">Drag Logo Here</div> */}
