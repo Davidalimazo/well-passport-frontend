@@ -110,10 +110,13 @@ const ClientFieldList = () => {
         <div className="my-4 flex flex-row items-center justify-between px-6 w-full">
           <div className=""></div>
           <div className="flex flex-row items-center gap-2">
-            <div className="flex flex-row items-center gap-1">
-              <Link to="/home/client">Client</Link>
-              <BsArrowRight />
-            </div>
+            {user?.role !== "CLIENT" && (
+              <div className="flex flex-row items-center gap-1">
+                <Link to="/home/client">Client</Link>
+                <BsArrowRight />
+              </div>
+            )}
+
             <div className="flex flex-row items-center gap-1">
               <Link to="#">Field</Link>
             </div>

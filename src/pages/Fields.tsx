@@ -46,12 +46,17 @@ const FieldListUI = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const req = await axios.get(fieldRoutes, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const req = await axios.get(
+        user?.role !== "CLIENT"
+          ? fieldRoutes
+          : fieldRoutes + `/client/${user?._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (req.data.length > 0) {
         setCachedDta(req.data);
       }

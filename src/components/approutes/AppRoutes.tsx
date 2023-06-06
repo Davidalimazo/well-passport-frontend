@@ -35,6 +35,7 @@ const AppRoutes = () => {
             <Route path="report/view" element={<TextEditor />} />
           </Route>
           <Route path="field" element={<FieldListUI />} />
+          <Route path="project" element={<WellProjectList />} />
           <Route path="settings" element={<Settings />}>
             <Route path="set" element={<SettingsOutlet />}>
               <Route index element={<ChangePassword />} />

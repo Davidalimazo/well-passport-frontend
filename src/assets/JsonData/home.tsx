@@ -29,3 +29,24 @@ export const homePageData = [
     link: "/home/project",
   },
 ];
+
+export const homePageDataClient = [
+  {
+    id: 0,
+    title: "Account",
+    img: user,
+    link: "/home/account",
+  },
+  {
+    id: 1,
+    title: "Fields",
+    img: fields,
+    link: "/home/field",
+  },
+  {
+    id: 2,
+    title: "Project",
+    img: project,
+    link: "/home/project",
+  },
+];

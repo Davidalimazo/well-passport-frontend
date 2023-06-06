@@ -50,12 +50,17 @@ const WellProjectList = () => {
   useEffect(() => {
     const getData = async () => {
       await axios
-        .get(apiRoutes.getWellProjects + `${yu.wellId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
+        .get(
+          user?.role !== "CLIENT"
+            ? projectRoutes
+            : apiRoutes.getWellProjects + `${yu.wellId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
           setCachedDta(res.data);
         })
@@ -108,12 +113,20 @@ const WellProjectList = () => {
         <div className="my-4 flex flex-row items-center justify-between px-6 w-full">
           <div className=""></div>
           <div className="flex flex-row items-center gap-2">
+            {user?.role !== "CLIENT" && (
+              <div className="flex flex-row items-center gap-1">
+                <Link to="/home/client">Client</Link>
+                <BsArrowRight />
+              </div>
+            )}
             <div className="flex flex-row items-center gap-1">
-              <Link to="/home/client">Client</Link>
-              <BsArrowRight />
-            </div>
-            <div className="flex flex-row items-center gap-1">
-              <Link to="/home/client/field">Field</Link>
+              <Link
+                to={`${
+                  user?.role !== "CLIENT" ? "/home/client/field" : "/home/field"
+                }`}
+              >
+                Field
+              </Link>
               <BsArrowRight />
             </div>
             <div className="flex flex-row items-center gap-1">
@@ -143,7 +156,7 @@ const WellProjectList = () => {
           <div className="text-[15px] sm:text-[20px] tracking-wide font-bold font-lekton">
             {yu.wellName?.toUpperCase()} | PROJECT LIST
           </div>
-          {user?.role === "ADMIN" ? (
+          {user?.role === "ADMIN" || user?.role === "USER" ? (
             <div className="text-center flex flex-row items-center">
               <Button
                 children="ADD NEW PROJECT"
@@ -205,7 +218,7 @@ const WellProjectList = () => {
                   </div>
                   {index === i ? (
                     <div className="text-lg flex flex-row gap-3">
-                      {user?.role === "ADMIN" ? (
+                      {user?.role === "ADMIN" || user?.role === "USER" ? (
                         <>
                           <AiFillEye onClick={open} />
 
