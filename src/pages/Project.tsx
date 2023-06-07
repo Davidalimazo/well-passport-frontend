@@ -50,17 +50,12 @@ const WellProjectList = () => {
   useEffect(() => {
     const getData = async () => {
       await axios
-        .get(
-          user?.role !== "CLIENT"
-            ? projectRoutes
-            : apiRoutes.getWellProjects + `${yu.wellId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        )
+        .get(apiRoutes.getWellProjects + `${yu.wellId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
         .then((res) => {
           setCachedDta(res.data);
         })

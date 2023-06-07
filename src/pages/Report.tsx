@@ -118,7 +118,7 @@ const ReportList = () => {
               <div className="flex flex-row items-center gap-1">
                 <Link to="/home/client">Client</Link>
                 <BsArrowRight />
-            </div>
+              </div>
             )}
             <div className="flex flex-row items-center gap-1">
               <Link

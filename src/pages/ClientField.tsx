@@ -212,7 +212,7 @@ const ClientFieldList = () => {
                       </div>
                       <div className="">
                         <span className="text-grey-200">Superintendent: </span>
-                        <span className="font-bold underline">
+                        <span className="font-bold">
                           {rest.superintendent.name}
                         </span>
                       </div>

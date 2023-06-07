@@ -19,6 +19,7 @@ import useSetClient from "../../hooks/useSetClient";
 import UploadDocs from "../UploadDoc";
 import { DatePickerInput } from "@mantine/dates";
 import { AiOutlineCalendar } from "react-icons/ai";
+import { format } from "date-fns";
 
 interface ViewModalProps {
   open: () => void;
@@ -35,6 +36,9 @@ interface FieldsValues {
   name: string;
   treeSpecs: number;
   longitude: number;
+  firstProductionDate: string;
+  initialCompletionDate: string;
+  spudDate: string;
   latitude: number;
   bitSize: number;
   casting: number;
@@ -42,6 +46,10 @@ interface FieldsValues {
   turbingSize: number;
   flowStation: string;
 }
+
+export const formattedDate = (date: string) => {
+  return date ? format(new Date(date), "yyyy-MM-dd") : "";
+};
 
 const AddWellModal: FC<ViewModalProps> = ({
   opened,
@@ -57,37 +65,31 @@ const AddWellModal: FC<ViewModalProps> = ({
   const [wellType, setWellType] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
-    defaultValues: {
-      fieldId: fieldId,
-      clientId: clientId,
-      name: isEdit ? clientData?.name : "",
-      treeSpecs: isEdit ? clientData?.treeSpecs : 0,
-      longitude: isEdit ? clientData?.longitude : 0,
-      latitude: isEdit ? clientData?.latitude : 0,
-      bitSize: isEdit ? clientData?.bitSize : 0,
-      casting: isEdit ? clientData?.casting : 0,
-      totalDepth: isEdit ? clientData?.totalDepth : 0,
-      turbingSize: isEdit ? clientData?.turbingSize : 0,
-      flowStation: isEdit ? clientData?.flowStation : "",
-    },
-  });
+  const { register, handleSubmit, formState, reset, setError, clearErrors } =
+    useForm<FieldsValues>({
+      defaultValues: {
+        fieldId: fieldId,
+        clientId: clientId,
+        name: isEdit ? clientData?.name : "",
+        firstProductionDate: isEdit ? clientData?.firstProductionDate : "",
+        spudDate: isEdit ? clientData?.spudDate : "",
+        treeSpecs: isEdit ? clientData?.treeSpecs : 0,
+        longitude: isEdit ? clientData?.longitude : 0,
+        latitude: isEdit ? clientData?.latitude : 0,
+        initialCompletionDate: isEdit ? clientData?.initialCompletionDate : "",
+        bitSize: isEdit ? clientData?.bitSize : 0,
+        casting: isEdit ? clientData?.casting : 0,
+        totalDepth: isEdit ? clientData?.totalDepth : 0,
+        turbingSize: isEdit ? clientData?.turbingSize : 0,
+        flowStation: isEdit ? clientData?.flowStation : "",
+      },
+    });
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
 
-  const [spudDate, setSpudDate] = useState<Date | null>(
-    isEdit && clientData?.spudDate ? new Date(clientData.spudDate) : null
-  );
-  const [firstComDate, setFirstComDate] = useState<Date | null>(
-    isEdit && clientData?.firstProductionDate
-      ? new Date(clientData.firstProductionDate)
-      : null
-  );
-  const [initialComDate, setInitialComDate] = useState<Date | null>(
-    isEdit && clientData?.initialCompletionDate
-      ? new Date(clientData.initialCompletionDate)
-      : null
-  );
+  const [spudDate, setSpudDate] = useState<Date | null>(null);
+  const [firstComDate, setFirstComDate] = useState<Date | null>(null);
+  const [initialComDate, setInitialComDate] = useState<Date | null>(null);
 
   const onSubmit = async (data: FieldsValues) => {
     try {
@@ -110,15 +112,11 @@ const AddWellModal: FC<ViewModalProps> = ({
 
               status: status,
 
-              spudDate: spudDate ? spudDate : clientData?.spudDate,
+              spudDate: data.spudDate,
 
-              firstProductionDate: firstComDate
-                ? firstComDate
-                : clientData?.firstProductionDate,
+              firstProductionDate: data.firstProductionDate,
 
-              initialCompletionDate: initialComDate
-                ? initialComDate
-                : clientData?.initialCompletionDate,
+              initialCompletionDate: data.initialCompletionDate,
 
               bitSize: data.bitSize,
 
@@ -262,6 +260,7 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <Select
                     radius="lg"
                     size="md"
+                    className="w-full sm:w-[240px]"
                     defaultValue={isEdit ? String(clientData?.wellType) : ""}
                     value={wellType}
                     onChange={setWellType}
@@ -417,19 +416,61 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">First Production Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper>
-                    <DatePickerInput
-                      valueFormat="YYYY MMM DD"
-                      radius="lg"
-                      size="md"
-                      defaultDate={
-                        new Date(clientData?.firstProductionDate as string)
-                      }
-                      value={firstComDate}
-                      onChange={setFirstComDate}
-                      error={!firstComDate ? true : false}
-                      icon={<AiOutlineCalendar />}
-                    />
+                  <Input.Wrapper
+                    id="endDate"
+                    error={errors.firstProductionDate?.message}
+                  >
+                    {isEdit ? (
+                      <Input
+                        radius="lg"
+                        size="md"
+                        defaultValue={
+                          isEdit
+                            ? formattedDate(
+                                clientData?.firstProductionDate as string
+                              )
+                            : ""
+                        }
+                        {...register("firstProductionDate", {
+                          onBlur: (e) => {
+                            if (
+                              !e.target.value ||
+                              !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
+                            ) {
+                              setError("firstProductionDate", {
+                                type: "pattern",
+                                message: "date must be in yyyy-mm-dd format",
+                              });
+                            } else {
+                              clearErrors("firstProductionDate");
+                            }
+                          },
+                          required: {
+                            value: true,
+                            message: "endDate is required",
+                          },
+                          pattern: {
+                            value: /^\d{4}-\d{1,2}-\d{1,2}/,
+                            message: "date must be in yyyy-mm-dd format",
+                          },
+                        })}
+                        error={
+                          errors.firstProductionDate?.message &&
+                          errors.firstProductionDate.message.length > 0
+                        }
+                      />
+                    ) : (
+                      <DatePickerInput
+                        radius="lg"
+                        valueFormat="YYYY MMM DD"
+                        size="md"
+                        value={firstComDate}
+                        onChange={setFirstComDate}
+                        className="w-full sm:w-[240px]"
+                        error={!firstComDate ? true : false}
+                        icon={<AiOutlineCalendar />}
+                      />
+                    )}
                   </Input.Wrapper>
                 </div>
               </div>
@@ -444,8 +485,9 @@ const AddWellModal: FC<ViewModalProps> = ({
                   <Select
                     radius="lg"
                     size="md"
+                    className="w-full sm:w-[240px]"
                     data={["DRIED", "DRILLING", "EXPLORING"]}
-                    defaultValue={isEdit ? clientData?.status : ""}
+                    defaultValue={"Ghhh"}
                     value={status}
                     onChange={setStatus}
                   />
@@ -546,22 +588,60 @@ const AddWellModal: FC<ViewModalProps> = ({
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
-                  <MdDateRange className="text-gray-500" />
+                  <FcInspection className="text-gray-500" />
                   <span className="text-gray-400">Spud Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper id="spudDate">
-                    <DatePickerInput
-                      radius="lg"
-                      valueFormat="YYYY MMM DD"
-                      size="lg"
-                      defaultDate={new Date(clientData?.spudDate as string)}
-                      value={spudDate}
-                      onChange={setSpudDate}
-                      error={!spudDate ? true : false}
-                      className="w-full"
-                      icon={<AiOutlineCalendar />}
-                    />
+                    {isEdit ? (
+                      <Input
+                        radius="lg"
+                        size="md"
+                        defaultValue={
+                          isEdit
+                            ? formattedDate(clientData?.spudDate as string)
+                            : ""
+                        }
+                        {...register("spudDate", {
+                          onBlur: (e) => {
+                            if (
+                              !e.target.value ||
+                              !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
+                            ) {
+                              setError("spudDate", {
+                                type: "pattern",
+                                message: "date must be in yyyy-mm-dd format",
+                              });
+                            } else {
+                              clearErrors("spudDate");
+                            }
+                          },
+                          required: {
+                            value: true,
+                            message: "spudDate is required",
+                          },
+                          pattern: {
+                            value: /^\d{4}-\d{1,2}-\d{1,2}/,
+                            message: "date must be in yyyy-mm-dd format",
+                          },
+                        })}
+                        error={
+                          errors.spudDate?.message &&
+                          errors.spudDate.message.length > 0
+                        }
+                      />
+                    ) : (
+                      <DatePickerInput
+                        radius="lg"
+                        valueFormat="YYYY MMM DD"
+                        size="md"
+                        className="w-full sm:w-[240px]"
+                        value={spudDate}
+                        onChange={setSpudDate}
+                        error={!spudDate ? true : false}
+                        icon={<AiOutlineCalendar />}
+                      />
+                    )}
                   </Input.Wrapper>
                 </div>
               </div>
@@ -572,18 +652,57 @@ const AddWellModal: FC<ViewModalProps> = ({
                 </div>
                 <div className="text-lg font-lekton font-bold">
                   <Input.Wrapper id="initialCompletionDate">
-                    <DatePickerInput
-                      radius="lg"
-                      valueFormat="YYYY MMM DD"
-                      size="md"
-                      defaultDate={
-                        new Date(clientData?.initialCompletionDate as string)
-                      }
-                      value={initialComDate}
-                      onChange={setInitialComDate}
-                      error={!initialComDate ? true : false}
-                      icon={<AiOutlineCalendar />}
-                    />
+                    {isEdit ? (
+                      <Input
+                        radius="lg"
+                        size="md"
+                        defaultValue={
+                          isEdit
+                            ? formattedDate(
+                                clientData?.initialCompletionDate as string
+                              )
+                            : ""
+                        }
+                        {...register("initialCompletionDate", {
+                          onBlur: (e) => {
+                            if (
+                              !e.target.value ||
+                              !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
+                            ) {
+                              setError("initialCompletionDate", {
+                                type: "pattern",
+                                message: "date must be in yyyy-mm-dd format",
+                              });
+                            } else {
+                              clearErrors("initialCompletionDate");
+                            }
+                          },
+                          required: {
+                            value: true,
+                            message: "initialCompletionDate is required",
+                          },
+                          pattern: {
+                            value: /^\d{4}-\d{1,2}-\d{1,2}/,
+                            message: "date must be in yyyy-mm-dd format",
+                          },
+                        })}
+                        error={
+                          errors.initialCompletionDate?.message &&
+                          errors.initialCompletionDate.message.length > 0
+                        }
+                      />
+                    ) : (
+                      <DatePickerInput
+                        radius="lg"
+                        valueFormat="YYYY MMM DD"
+                        size="md"
+                        value={initialComDate}
+                        className="w-full sm:w-[240px]"
+                        onChange={setInitialComDate}
+                        error={!initialComDate ? true : false}
+                        icon={<AiOutlineCalendar />}
+                      />
+                    )}
                   </Input.Wrapper>
                 </div>
               </div>

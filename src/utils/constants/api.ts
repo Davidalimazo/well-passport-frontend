@@ -13,4 +13,5 @@ export const apiRoutes = {
   getWellProjects: projectRoutes + "/well/",
   getReportByProjectId: reportRoutes + "/project/",
   uploadProfileImg: authRoutes + "/upload-image/",
+  getClientWells: wellRoutes + "/client/",
 };

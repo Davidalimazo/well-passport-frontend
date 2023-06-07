@@ -330,9 +330,25 @@ const AddClientFieldModal: FC<ViewModalProps> = ({
                         isEdit ? clientData?.superintendent.mobileNo : ""
                       }
                       {...register("superintendent.mobileNo", {
+                        onBlur: (e) => {
+                          if (
+                            !e.target.value ||
+                            !/(\+234)?(\d{3})(\d{3})(\d{4})(\d{1})?/g.test(
+                              e.target.value
+                            )
+                          ) {
+                            !isEdit &&
+                              setError("superintendent.mobileNo", {
+                                type: "pattern",
+                                message: "invalid phone number format",
+                              });
+                          } else {
+                            clearErrors("superintendent.mobileNo");
+                          }
+                        },
                         required: {
                           value: isEdit ? false : true,
-                          message: "name is required",
+                          message: "phone number is required",
                         },
                         pattern: {
                           value: /(\+234)?(\d{3})(\d{3})(\d{4})(\d{1})?/g,

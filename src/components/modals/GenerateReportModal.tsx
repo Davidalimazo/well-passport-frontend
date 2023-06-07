@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Input, Select } from "@mantine/core";
 import Button from "../buttons/Button";
 // import { ProjectDataProp } from '../../pages/Project';
@@ -7,6 +7,8 @@ import { MdDateRange } from "react-icons/md";
 import { GiField, GiHobbitDwelling } from "react-icons/gi";
 import { GrStatusUnknown } from "react-icons/gr";
 import { useForm } from "react-hook-form";
+import { DatePickerInput } from "@mantine/dates";
+import { AiOutlineCalendar } from "react-icons/ai";
 
 interface ViewModalProps {
   open: () => void;
@@ -20,8 +22,9 @@ interface FieldsValues {
   endDate: string;
 }
 const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
-  const { register, formState, clearErrors, setError } =
-    useForm<FieldsValues>();
+  const { register, formState } = useForm<FieldsValues>();
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { errors, isDirty, isValid, isSubmitting } = formState;
 
   return (
@@ -69,7 +72,7 @@ const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
                   <Select
                     radius="lg"
                     size="sm"
-                    data={["In Progress", "Completed", "Proposed"]}
+                    data={["In Progress", "Completed", "Proposed", "Mixed"]}
                   />
                 </div>
               </div>
@@ -82,41 +85,16 @@ const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
                   <span className="text-gray-400">Start Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
-                  <Input.Wrapper
-                    id="startDate"
-                    error={errors.startDate?.message}
-                  >
-                    <Input
+                  <Input.Wrapper id="startDate">
+                    <DatePickerInput
                       radius="lg"
+                      valueFormat="YYYY MMM DD"
                       size="md"
-                      placeholder="2022-05-02"
-                      {...register("startDate", {
-                        onBlur: (e) => {
-                          if (
-                            !e.target.value ||
-                            !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
-                          ) {
-                            setError("startDate", {
-                              type: "pattern",
-                              message: "date must be in yyyy-mm-dd format",
-                            });
-                          } else {
-                            clearErrors("startDate");
-                          }
-                        },
-                        required: {
-                          value: true,
-                          message: "startDate is required",
-                        },
-                        pattern: {
-                          value: /^\d{4}-\d{1,2}-\d{1,2}/,
-                          message: "date must be in yyyy-mm-dd format",
-                        },
-                      })}
-                      error={
-                        errors.startDate?.message &&
-                        errors.startDate.message.length > 0
-                      }
+                      className="w-full sm:w-[240px]"
+                      value={startDate}
+                      onChange={setStartDate}
+                      error={!startDate ? true : false}
+                      icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
                 </div>
@@ -127,38 +105,16 @@ const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
                   <span className="text-gray-400">End Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold">
-                  <Input.Wrapper id="endDate" error={errors.endDate?.message}>
-                    <Input
+                  <Input.Wrapper id="endDate">
+                    <DatePickerInput
                       radius="lg"
+                      valueFormat="YYYY MMM DD"
                       size="md"
-                      placeholder="2022-05-02"
-                      {...register("endDate", {
-                        onBlur: (e) => {
-                          if (
-                            !e.target.value ||
-                            !/^\d{4}-\d{1,2}-\d{1,2}/.test(e.target.value)
-                          ) {
-                            setError("endDate", {
-                              type: "pattern",
-                              message: "date must be in yyyy-mm-dd format",
-                            });
-                          } else {
-                            clearErrors("endDate");
-                          }
-                        },
-                        required: {
-                          value: true,
-                          message: "endDate is required",
-                        },
-                        pattern: {
-                          value: /^\d{4}-\d{1,2}-\d{1,2}/,
-                          message: "date must be in yyyy-mm-dd format",
-                        },
-                      })}
-                      error={
-                        errors.endDate?.message &&
-                        errors.endDate.message.length > 0
-                      }
+                      className="w-full sm:w-[240px]"
+                      value={endDate}
+                      onChange={setEndDate}
+                      error={!endDate ? true : false}
+                      icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
                 </div>
@@ -171,7 +127,12 @@ const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
                   <span className="text-gray-400">Save As</span>
                 </div>
                 <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
-                  <Select radius="lg" size="sm" data={["PDF", "Excel"]} />
+                  <Select
+                    radius="lg"
+                    size="sm"
+                    data={["PDF", "Excel"]}
+                    className="w-full sm:w-[240px]"
+                  />
                 </div>
               </div>
             </div>

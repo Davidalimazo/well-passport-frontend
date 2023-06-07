@@ -41,17 +41,18 @@ const AddClientModal: FC<ViewModalProps> = ({
   isEdit,
   clientData,
 }) => {
-  const { register, handleSubmit, formState, reset } = useForm<FieldsValues>({
-    defaultValues: {
-      address: clientData?.address,
-      contactPerson: clientData?.contactPerson,
-      email: clientData?.email,
-      mobile: clientData?.mobile,
-      name: clientData?.name,
-      website: clientData?.website,
-      ownerId: clientData?.ownerId,
-    },
-  });
+  const { register, handleSubmit, formState, reset, setError, clearErrors } =
+    useForm<FieldsValues>({
+      defaultValues: {
+        address: clientData?.address,
+        contactPerson: clientData?.contactPerson,
+        email: clientData?.email,
+        mobile: clientData?.mobile,
+        name: clientData?.name,
+        website: clientData?.website,
+        ownerId: clientData?.ownerId,
+      },
+    });
   const { token } = useAuth((state) => state);
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
@@ -215,6 +216,22 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder="09022697007"
                       defaultValue={isEdit ? clientData?.mobile : ""}
                       {...register("mobile", {
+                        onBlur: (e) => {
+                          if (
+                            !e.target.value ||
+                            !/(\+234)?(\d{3})(\d{3})(\d{4})(\d{1})?/g.test(
+                              e.target.value
+                            )
+                          ) {
+                            !isEdit &&
+                              setError("mobile", {
+                                type: "pattern",
+                                message: "invalid phone number format",
+                              });
+                          } else {
+                            clearErrors("mobile");
+                          }
+                        },
                         required: {
                           value: isEdit ? false : true,
                           message: "mobile is required",
@@ -242,7 +259,6 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      type="url"
                       placeholder="www.aiteo.com"
                       defaultValue={isEdit ? clientData?.website : ""}
                       {...register("website", {

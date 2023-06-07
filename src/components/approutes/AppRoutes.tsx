@@ -17,6 +17,7 @@ import ErrorPage from "../../pages/ErrorPage";
 import Tokenized from "../../pages/Tokenized";
 import UpdateAccount from "../../pages/UpdateAccount";
 import TextEditor from "../../utils/TextEditor";
+import Account from "../../pages/Account";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
           </Route>
           <Route path="field" element={<FieldListUI />} />
           <Route path="project" element={<WellProjectList />} />
+          <Route path="account" element={<Account />} />
           <Route path="settings" element={<Settings />}>
             <Route path="set" element={<SettingsOutlet />}>
               <Route index element={<ChangePassword />} />

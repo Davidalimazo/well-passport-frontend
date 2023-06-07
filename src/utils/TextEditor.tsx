@@ -1,23 +1,21 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 //import parse from "html-react-parser";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Button from "../components/buttons/Button";
 import { Group } from "@mantine/core";
 //import jsPDF from "jspdf";
+import { useReactToPrint } from "react-to-print";
 
 const TextEditor = () => {
   const [text, setText] = useState("");
+  const componentPDF = useRef(null);
 
-  // const generatePDF = () => {
-  //   const jspdf = new jsPDF("p", "px", "a4");
-  //   //@ts-ignore
-  //   jspdf.html(document.querySelector("#content"), {
-  //     callback: function (pdf) {
-  //       pdf.save("test.pdf");
-  //     },
-  //   });
-  // };
+  const generatePDF = useReactToPrint({
+    content: () => componentPDF.current!,
+    documentTitle: "report",
+    onAfterPrint: () => alert("printed successfully"),
+  });
 
   return (
     <div className="">
@@ -32,8 +30,14 @@ const TextEditor = () => {
         />
       </div>
       <Group position="center">
-        <Button children="Submit" className="w-24" onClick={() => null} />
+        <Button children="Submit" className="w-24" onClick={generatePDF} />
       </Group>
+
+      <div
+        className=""
+        dangerouslySetInnerHTML={{ __html: true }}
+        ref={componentPDF}
+      />
     </div>
   );
 };

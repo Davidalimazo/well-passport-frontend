@@ -76,7 +76,7 @@ const ChangePassword: FC<ChangePasswordProps> = ({}) => {
               icon={<RiLockPasswordFill />}
               size="xl"
               id="oldPasswod"
-              placeholder="oldPasswod"
+              placeholder="Old Passwod"
               radius="xl"
               {...register("oldPasswod", {
                 required: {
@@ -99,7 +99,7 @@ const ChangePassword: FC<ChangePasswordProps> = ({}) => {
               icon={<RiLockPasswordFill />}
               size="xl"
               id="newPassword"
-              placeholder="newPassword"
+              placeholder="New Password"
               radius="xl"
               {...register("newPassword", {
                 required: {

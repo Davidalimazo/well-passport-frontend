@@ -1,5 +1,4 @@
 import user from "../images/user_lg.png";
-import project from "../images/project.png";
 import building from "../images/building.png";
 import fields from "../images/fields.png";
 
@@ -16,18 +15,6 @@ export const homePageData = [
     img: building,
     link: "/home/client",
   },
-  {
-    id: 2,
-    title: "Fields",
-    img: fields,
-    link: "/home/field",
-  },
-  {
-    id: 3,
-    title: "Project",
-    img: project,
-    link: "/home/project",
-  },
 ];
 
 export const homePageDataClient = [
@@ -42,11 +29,5 @@ export const homePageDataClient = [
     title: "Fields",
     img: fields,
     link: "/home/field",
-  },
-  {
-    id: 2,
-    title: "Project",
-    img: project,
-    link: "/home/project",
   },
 ];
