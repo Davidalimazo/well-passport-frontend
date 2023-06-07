@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import Button from "../components/buttons/Button";
 import useAuth from "../utils/auth";
 import axios from "axios";
 import UploadDocs from "../components/UploadDoc";
-import { apiRoutes, authRoutes } from "../utils/constants/api";
+import { apiRoutes } from "../utils/constants/api";
 import ErrorModal from "../components/modals/ErrorModal";
 import { useDisclosure } from "@mantine/hooks";
 import { imageUrlChecker } from "./Client";
@@ -18,28 +18,6 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
 
   const [errorMsg, setErrorMsg] = useState("");
   const [error, setError] = useState(false);
-
-  const [imageUrl, setImageUrl] = useState("");
-
-  useEffect(() => {
-    const getData = async () => {
-      await axios
-        .get(authRoutes + `/${user?._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setImageUrl(response.data.image);
-        })
-        .catch((_) => {
-          setErrorMsg("Could not get user image");
-          setError(true);
-          open();
-        });
-    };
-    getData();
-  }, []);
 
   const handleSubmit = () => {
     if (file?.file) {
@@ -66,6 +44,7 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
         });
     }
   };
+  console.log(imageUrlChecker(user?.image));
 
   return (
     <div className="flex justify-center items-center">
@@ -80,14 +59,16 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
           ))
         ) : (
           <img
-            src={imageUrlChecker(imageUrl)}
+            src={imageUrlChecker(user?.image)}
             alt=""
             className="h-[150px] w-[150px] mb-6 rounded-full"
           />
         )}
 
         <UploadDocs
-          name={`${imageUrl ? "Change Profile Image" : "Upload Profile Image"}`}
+          name={`${
+            user?.image ? "Change Profile Image" : "Upload Profile Image"
+          }`}
           setFile={setFile}
           file={file}
         />
