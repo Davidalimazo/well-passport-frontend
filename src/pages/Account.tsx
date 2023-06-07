@@ -8,7 +8,7 @@ interface AccountProps {}
 const Account: FC<AccountProps> = ({}) => {
   const { user } = useAuth((state) => state);
 
-  console.log(UPLOADS + user?.image);
+
   return (
     <div className="mt-10">
       <Group position="center">

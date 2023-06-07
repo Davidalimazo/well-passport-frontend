@@ -15,8 +15,6 @@ const Header: FC<HeaderProps> = ({}) => {
 
   const location = useLocation();
 
-  console.log(imageUrlChecker(user?.image));
-
   let menu = user?.email
     ? user.role === "ADMIN"
       ? AdminMenu

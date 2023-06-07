@@ -274,7 +274,7 @@ const ClientFieldList = () => {
         open={openDeleteModal}
         opened={openedDeleteModal}
         close={onCloseDelete}
-        text="Are you sure you want to delete this client"
+        text="Are you sure you want to delete this field"
         id={fieldId}
         onDelete={() => handleDelete(fieldId)}
       />

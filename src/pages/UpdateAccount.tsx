@@ -44,7 +44,6 @@ const UpdateAccount: FC<UpdateAccountProps> = ({}) => {
         });
     }
   };
-  console.log(imageUrlChecker(user?.image));
 
   return (
     <div className="flex justify-center items-center">
