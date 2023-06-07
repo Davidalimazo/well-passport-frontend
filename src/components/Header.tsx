@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import logo from "../assets/images/zaman.png";
 import CustomMenu from "./CustomMenu";
 import { AdminMenu, authMenu } from "../assets/JsonData/menu";
@@ -7,13 +7,34 @@ import useAuth from "../utils/auth";
 import { Link, useLocation } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { imageUrlChecker } from "../pages/Client";
+import { authRoutes } from "../utils/constants/api";
+import axios from "axios";
 
 interface HeaderProps {}
 
 const Header: FC<HeaderProps> = ({}) => {
-  const user = useAuth((state) => state.user);
+  const { user, token } = useAuth((state) => state);
+  const [imageUrl, setImageUrl] = useState("");
 
   const location = useLocation();
+
+  useEffect(() => {
+    const getData = async () => {
+      await axios
+        .get(authRoutes + `/${user?._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setImageUrl(response.data.image);
+        })
+        .catch((_) => {
+          console.log("error getting image");
+        });
+    };
+    getData();
+  }, []);
 
   let menu = user?.email
     ? user.role === "ADMIN"
@@ -51,13 +72,13 @@ const Header: FC<HeaderProps> = ({}) => {
               {menu && (
                 <CustomMenu
                   button={
-                    user?.image ? (
+                    imageUrl.length > 0 ? (
                       <Avatar
                         radius="xl"
                         size="lg"
                         color="blue"
                         className="cursor-pointer uppercase"
-                        src={imageUrlChecker(user.image)}
+                        src={imageUrlChecker(imageUrl)}
                       />
                     ) : (
                       <Avatar
