@@ -56,13 +56,6 @@ const ClientListUi = () => {
     getData();
   }, []);
 
-  const excelData =
-    cachedData &&
-    cachedData.map((item, i) => {
-      const { _id, updatedAt, adminId, image, ...rest } = item;
-      return rest;
-    });
-
   const [openedAddModal, { open: openAddModal, close: onClose }] =
     useDisclosure(false);
 
