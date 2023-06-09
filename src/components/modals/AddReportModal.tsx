@@ -19,7 +19,6 @@ interface ViewModalProps {
   open: () => void;
   close: () => void;
   opened: boolean;
-  id: string;
 }
 
 interface ReportValues {

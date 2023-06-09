@@ -213,7 +213,6 @@ const AddWellModal: FC<ViewModalProps> = ({
         opened={opened}
         onClose={() => {
           close();
-          location.reload();
         }}
       >
         <div className="space-y-6">

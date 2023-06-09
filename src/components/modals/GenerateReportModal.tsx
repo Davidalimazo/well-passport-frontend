@@ -4,7 +4,7 @@ import Button from "../buttons/Button";
 // import { ProjectDataProp } from '../../pages/Project';
 // import { HiDocumentText } from 'react-icons/hi';
 import { MdDateRange } from "react-icons/md";
-import { GiField, GiHobbitDwelling } from "react-icons/gi";
+import { GiField } from "react-icons/gi";
 import { GrStatusUnknown } from "react-icons/gr";
 import { useForm } from "react-hook-form";
 import { DatePickerInput } from "@mantine/dates";
@@ -117,22 +117,6 @@ const GenerateReportModal: FC<ViewModalProps> = ({ opened, close }) => {
                       icon={<AiOutlineCalendar />}
                     />
                   </Input.Wrapper>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
-              <div className="space-y-4">
-                <div className="flex flex-row items-center gap-3">
-                  <GiHobbitDwelling className="text-gray-500" />
-                  <span className="text-gray-400">Save As</span>
-                </div>
-                <div className="text-lg font-lekton font-bold sm:pl-8 md:pl-8 lg:pl-8">
-                  <Select
-                    radius="lg"
-                    size="sm"
-                    data={["PDF", "Excel"]}
-                    className="w-full sm:w-[240px]"
-                  />
                 </div>
               </div>
             </div>

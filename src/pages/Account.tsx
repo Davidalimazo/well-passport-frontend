@@ -1,13 +1,12 @@
 import { FC } from "react";
 import useAuth from "../utils/auth";
 import { Group } from "@mantine/core";
-import { UPLOADS } from "../utils/constants/api";
+import { imageUrlChecker } from "./Client";
 
 interface AccountProps {}
 
 const Account: FC<AccountProps> = ({}) => {
   const { user } = useAuth((state) => state);
-
 
   return (
     <div className="mt-10">
@@ -15,7 +14,7 @@ const Account: FC<AccountProps> = ({}) => {
         <div className="bg-white p-10">
           <div className="h-[250px] overflow-hidden">
             <img
-              src={UPLOADS + user?.image}
+              src={imageUrlChecker(user?.image)}
               alt=""
               className="bg-transparent object-cover h-full"
             />
