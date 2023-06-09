@@ -110,14 +110,14 @@ const Action = ({ row }: Props) => {
         opened={opened}
         close={close}
         title="CLIENT INFORMATION"
-        clientData={...row}
+        clientData={row}
       />
       <AddClientModal
         open={openEditModal}
         opened={openedEditModal}
         close={onCloseEdit}
         title="EDIT CLIENT INFORMATION"
-        clientData={...row}
+        clientData={row}
         isEdit
       />
       <DeleteModal

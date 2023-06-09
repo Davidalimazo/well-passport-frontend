@@ -117,14 +117,14 @@ const Action = ({ row }: Props) => {
         opened={opened}
         close={close}
         title="FIELD INFORMATION"
-        clientData={...row}
+        clientData={row}
       />
       <AddProjectModal
         open={openEditModal}
         opened={openedEditModal}
         close={onCloseEdit}
         title="EDIT CLIENT INFORMATION"
-        clientData={...row}
+        clientData={row}
         isEdit
       />
       <DeleteModal
